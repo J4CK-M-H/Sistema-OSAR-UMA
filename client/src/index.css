@@ -1,0 +1,125 @@
+@layer tailwind-base, primereact, tailwind-utilities;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+
+body {
+  background-color: #F6F1E9;
+}
+
+.p-inputtext {
+  outline: none;
+  box-shadow: none;
+}
+
+.p-inputtext:hover {
+  @apply border-slate-300
+}
+
+.p-inputtext:focus {
+  @apply border-slate-300
+}
+.p-card-body {
+  padding: 0 1.25rem !important;
+}
+
+.p-card-content {
+  padding: .8rem 0 0 0 !important;
+}
+
+.p-divider.p-divider-horizontal {
+  padding: 0;
+  margin: 0;
+}
+
+.p-sidebar-content {
+  padding: 0;
+}
+
+.text-select {
+  font-size: .5rem !important;
+}
+
+.p-dropdown-items {
+  font-size: .8rem;
+}
+
+.p-dropdown-label {
+  font-size: .8rem;
+}
+
+.p-datatable-table td, .p-column-header-content span  {
+  font-size: .8rem !important;
+}
+
+.p-toast-message-content {
+  color: #333;
+}
+
+.p-dropdown-items {
+  font-size: .7rem;
+}
+
+.reporte_alumnos .p-accordion-header-link, .admision .p-accordion-header-link  {
+  @apply bg-rose-700 text-white
+}
+
+
+.p-accordion-toggle-icon {
+  display: none !important;
+}
+.p-accordion-content {
+  padding: 0;
+  margin: 0;
+}
+
+.p-dropdown-panel {
+  max-width: 250px !important;
+}
+
+.p-radiobutton-box {
+  background: white;
+  border: 2px solid #FE0000;
+}
+
+.p-radiobutton-icon {
+  background: red;
+  border: none !important;
+  outline: none;
+}
+
+/* CREAMOS LA PROPIEDAD SIDEBAR PARA QUE EL QUITADO DE MARGEN AFECTE A SOLO LOS ACORDION TABS QUE ESTAN DENTRO DE ESTE */
+.sidebar .p-accordion-tab {
+  @apply m-0 rounded-none
+}
+
+.drawer .p-accordion-header {
+  @apply border-l-8 border-white rounded-none;
+}
+
+.drawer .p-accordion-header-link {
+  @apply rounded-none border-l-0;
+}
+
+.drawer .p-accordion-header:hover {
+  @apply border-rose-700;
+}
+
+
+.block-scroll {
+  height: calc(100vh - 140px);
+  /* overflow: hidden; */
+}
+
+.p-link{
+  @apply bg-white text-black
+}
