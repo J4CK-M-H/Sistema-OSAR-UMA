@@ -13,7 +13,7 @@
 }
 
 body {
-  background-color: #F6F1E9;
+  background-color: #f6f1e9;
 }
 
 .p-inputtext {
@@ -22,18 +22,18 @@ body {
 }
 
 .p-inputtext:hover {
-  @apply border-slate-300
+  @apply border-slate-300;
 }
 
 .p-inputtext:focus {
-  @apply border-slate-300
+  @apply border-slate-300;
 }
 .p-card-body {
   padding: 0 1.25rem !important;
 }
 
 .p-card-content {
-  padding: .8rem 0 0 0 !important;
+  padding: 0.8rem 0 0 0 !important;
 }
 
 .p-divider.p-divider-horizontal {
@@ -46,19 +46,20 @@ body {
 }
 
 .text-select {
-  font-size: .5rem !important;
+  font-size: 0.5rem !important;
 }
 
 .p-dropdown-items {
-  font-size: .8rem;
+  font-size: 0.8rem;
 }
 
 .p-dropdown-label {
-  font-size: .8rem;
+  font-size: 0.8rem;
 }
 
-.p-datatable-table td, .p-column-header-content span  {
-  font-size: .8rem !important;
+.p-datatable-table td,
+.p-column-header-content span {
+  font-size: 0.8rem !important;
 }
 
 .p-toast-message-content {
@@ -66,13 +67,13 @@ body {
 }
 
 .p-dropdown-items {
-  font-size: .7rem;
+  font-size: 0.7rem;
 }
 
-.reporte_alumnos .p-accordion-header-link, .admision .p-accordion-header-link  {
-  @apply bg-rose-700 text-white
+.reporte_alumnos .p-accordion-header-link,
+.admision .p-accordion-header-link {
+  @apply bg-rose-700 text-white;
 }
-
 
 .p-accordion-toggle-icon {
   display: none !important;
@@ -88,7 +89,7 @@ body {
 
 .p-radiobutton-box {
   background: white;
-  border: 2px solid #FE0000;
+  border: 2px solid #fe0000;
 }
 
 .p-radiobutton-icon {
@@ -99,7 +100,7 @@ body {
 
 /* CREAMOS LA PROPIEDAD SIDEBAR PARA QUE EL QUITADO DE MARGEN AFECTE A SOLO LOS ACORDION TABS QUE ESTAN DENTRO DE ESTE */
 .sidebar .p-accordion-tab {
-  @apply m-0 rounded-none
+  @apply m-0 rounded-none;
 }
 
 .drawer .p-accordion-header {
@@ -114,12 +115,60 @@ body {
   @apply border-rose-700;
 }
 
-
 .block-scroll {
   height: calc(100vh - 140px);
   /* overflow: hidden; */
 }
 
-.p-link{
-  @apply bg-white text-black
+.p-link {
+  @apply bg-white text-black;
+}
+
+.card_admision span.p-column-title {
+  display: block;
+  margin: 0 auto;
+}
+
+.p-paginator-page:focus {
+  @apply bg-rose-700 text-white;
+}
+
+.p-paginator-page:hover {
+  @apply bg-rose-700 text-white;
+}
+
+.p-datatable-thead {
+  position: relative;
+}
+
+.p-checkbox .p-checkbox-box.p-highlight {
+  color: #fe0000 !important;
+  border: 1px solid #fe0000;
+  @apply bg-rose-700
+}
+
+.p-multiselect-panel .p-multiselect-items .p-multiselect-item.p-highlight {
+  color: #000;
+}
+
+.p-multiselect:not(.disabled):hover {
+  @apply border border-rose-700
+}
+
+.p-multiselect:not(.disabled).p-focus {
+  box-shadow: none;
+  @apply border border-rose-700
+}
+
+.table_matriculados .p-datatable-header {
+  @apply bg-rose-700
+}
+
+.p-component-overlay {
+  /* background-color: rgba(0,0,0,.1) !important; */
+  /* filter: blur(.6px); */
+}
+
+.p-dialog-header {
+  @apply bg-rose-700 text-white
 }

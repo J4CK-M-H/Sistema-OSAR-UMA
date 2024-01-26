@@ -10,7 +10,8 @@ export const PRIVATE = {
   ADMISION_CHEKING_LIST: "checking-list",
   ADMISION_LISTA_ADMISION: "lista-admision",
   ADMISION_REPORTE_ADMISION: "reporte-admision",
-  ADMISION_ADMINISTRACION_PROYECCION_ADMISION: "proyeccion-admision"
+  ADMISION_ADMINISTRACION_PROYECCION_ADMISION: "proyeccion-admision",
+  CERTIFICADO: "generar-certificado"
 };
 
 export const PUBLIC = {

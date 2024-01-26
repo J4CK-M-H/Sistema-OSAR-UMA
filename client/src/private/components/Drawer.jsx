@@ -92,9 +92,7 @@ export const Drawer = ({ visible, setVisible }) => {
           // ((auth?.nombrerol).toUpperCase() == 'DEVELOPER' || 'ADMINISTRADOR' ) && (
 
           <Accordion className="">
-            <AccordionTab
-              headerTemplate={templateReporte}
-            >
+            <AccordionTab headerTemplate={templateReporte}>
               <div className="flex flex-col  justify-center">
                 <Link
                   onClick={() => setVisible(false)}
@@ -177,6 +175,18 @@ export const Drawer = ({ visible, setVisible }) => {
               </div>
             </AccordionTab>
           </Accordion>
+        )}
+        {(auth?.idusuario == 1 || auth?.idusuario == 2) && (
+          // ((auth?.nombrerol).toUpperCase() == 'DEVELOPER' || 'ADMINISTRADOR' ) && (
+
+          <Link
+            onClick={() => setVisible(false)}
+            to={`${PRIVATE.CERTIFICADO}`}
+            className="py-3 px-6 flex items-center gap-x-4 border-white hover:bg-slate-100 border-l-8 hover:border-rose-700"
+          >
+            <FaUsers size={25} />
+            <span className="font-semibold">Certificado</span>
+          </Link>
         )}
       </div>
     </Sidebar>

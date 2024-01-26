@@ -142,7 +142,7 @@ export const ModalEditUsuario = ({
         draggable={false}
         resizable={false}
       >
-        <form className="space-y-4">
+        <form className="space-y-4 mt-6">
           <div className="p-inputgroup flex-1">
             <span className="p-inputgroup-addon bg-rose-700">
               <TbLetterCase size={20} color="white" />
