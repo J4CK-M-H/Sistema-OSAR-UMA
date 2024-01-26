@@ -19,7 +19,6 @@ const login = async (req = request, res = response) => {
     type: QueryTypes.SELECT,
     raw: false,
   });
-  console.log(validar_usuario);
 
   if (validar_usuario.length == 0) {
     return res.status(400).json({ message: "Usuario/Password incorrectos" });
