@@ -2,7 +2,7 @@ import Sequelize from "sequelize";
 
 const DATABASE = "uma";
 const USERNAME = "root";
-const PASSWORD = "";
+const PASSWORD = "jack98";
 
 
 const connection = new Sequelize(DATABASE, USERNAME, PASSWORD, {

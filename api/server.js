@@ -11,7 +11,8 @@ import cors from "cors";
 
 const app = express();
 app.use(cors({
-  origin: 'http://192.168.1.4:5173',
+  origin: 'http://192.168.0.112:5173',
+  // origin: 'http://192.168.1.4:5173',
   optionsSuccessStatus: 200 
 }));
 app.use(express.json());
@@ -27,7 +28,8 @@ app.use("/api/admision", admisionRoutes);
 
 
 
-app.listen(3500, '192.168.1.4');
+app.listen(3500, '192.168.0.112');
+// app.listen(3500, '192.168.1.4');
 // app.listen(3000, () => {
 //   console.log("listening on Port 3000");
 // });
