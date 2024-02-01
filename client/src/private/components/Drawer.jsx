@@ -15,6 +15,9 @@ import { FaListAlt } from "react-icons/fa";
 import { FaChartBar } from "react-icons/fa";
 import { FaClipboardList } from "react-icons/fa";
 import { CiCircleList } from "react-icons/ci";
+import { LuBookMarked } from "react-icons/lu";
+import { FiBook } from "react-icons/fi";
+import { Avatar } from "primereact/avatar";
 
 export const Drawer = ({ visible, setVisible }) => {
   const { auth, loadingAuth } = useContext(AuthContext);
@@ -49,6 +52,20 @@ export const Drawer = ({ visible, setVisible }) => {
           <FaListAlt className="mr-4" size={25} />
           <span className="block mr-2 font-semibold text-slate-600">
             Admision
+          </span>
+          <FaArrowTurnDown size={15} />
+        </div>
+      </>
+    );
+  };
+
+  const templateLibros = () => {
+    return (
+      <>
+        <div className="-my-2 flex items-center">
+          <LuBookMarked className="mr-4" size={25}/>
+          <span className="block mr-2 font-semibold text-slate-600">
+            Libros
           </span>
           <FaArrowTurnDown size={15} />
         </div>
@@ -187,6 +204,37 @@ export const Drawer = ({ visible, setVisible }) => {
             <FaUsers size={25} />
             <span className="font-semibold">Certificado</span>
           </Link>
+        )}
+        {(auth?.idusuario == 1 || auth?.idusuario == 2) && (
+          // ((auth?.nombrerol).toUpperCase() == 'DEVELOPER' || 'ADMINISTRADOR' ) && (
+
+          <Accordion className="">
+            <AccordionTab headerTemplate={templateLibros}>
+              <div className="flex flex-col  justify-center">
+                <Link
+                  onClick={() => setVisible(false)}
+                  to={`${PRIVATE.LIBROS}/${PRIVATE.LIBRO_6}`}
+                  className="flex items-center gap-x-4 hover:bg-slate-100 py-2 pl-10"
+                >
+                  <FiBook size={20} />
+                  <span className="font-semibold py-2 text-sm">
+                    Libro 6
+                  </span>
+                </Link>
+                <Divider />
+                <Link
+                  onClick={() => setVisible(false)}
+                  to={`${PRIVATE.LIBROS}/${PRIVATE.LIBRO_5}`}
+                  className="flex items-center gap-x-4 hover:bg-slate-100 py-2 pl-10"
+                >
+                  <FiBook size={20} />
+                  <span className="font-semibold py-2 text-sm">
+                    Libro 5
+                  </span>
+                </Link>
+              </div>
+            </AccordionTab>
+          </Accordion>
         )}
       </div>
     </Sidebar>

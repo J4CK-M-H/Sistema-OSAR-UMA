@@ -163,12 +163,26 @@ body {
 .table_matriculados .p-datatable-header {
   @apply bg-rose-700
 }
-
-.p-component-overlay {
-  /* background-color: rgba(0,0,0,.1) !important; */
-  /* filter: blur(.6px); */
-}
-
 .p-dialog-header {
   @apply bg-rose-700 text-white
+}
+
+.upload_section .p-button{
+  @apply bg-rose-700 border-none text-white
+}
+
+.upload_section .p-fileupload-content{
+  @apply border-2 border-slate-400 border-dashed 
+}
+
+.upload_section [aria-label="Upload"] {
+  @apply hidden
+}
+
+.p-datatable-gridlines {
+  @apply border-red-800
+}
+
+.contenedor_filtro .p-autocomplete-input {
+  @apply w-full
 }

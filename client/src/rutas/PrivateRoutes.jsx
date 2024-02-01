@@ -15,6 +15,9 @@ import { NotFound } from "../publico/NotFound";
 import { ReporteAdmision } from "../private/components/ReporteAdmision";
 import { AdministracionProyeccion } from "../private/components/AdministracionProyeccion";
 import { Certificado } from "../private/pages/Certificado";
+import { Libro } from "../private/pages/Libro";
+import { Libro6 } from "../private/components/Libro6";
+import { Libro5 } from "../private/components/Libro5";
 
 export const PrivateRoutes = () => {
   return (
@@ -64,6 +67,13 @@ export const PrivateRoutes = () => {
 
         <Route element={<RequireAuth roles={[1, 2]} />}>
           <Route path={`${PRIVATE.CERTIFICADO}`} element={<Certificado />} />
+        </Route>
+
+        <Route element={<RequireAuth roles={[1, 2]} />}>
+          <Route path={`${PRIVATE.LIBROS}`} element={<Libro />}>
+            <Route path={`${PRIVATE.LIBRO_6}`} element={<Libro6/>} /> 
+            <Route path={`${PRIVATE.LIBRO_5}`} element={<Libro5/>} /> 
+          </Route>
         </Route>
       </Route>
 

@@ -11,6 +11,9 @@ export const PRIVATE = {
   ADMISION_LISTA_ADMISION: "lista-admision",
   ADMISION_REPORTE_ADMISION: "reporte-admision",
   ADMISION_ADMINISTRACION_PROYECCION_ADMISION: "proyeccion-admision",
+  LIBROS: "libros",
+  LIBRO_6: "libro-6",
+  LIBRO_5: "libro-5",
   CERTIFICADO: "generar-certificado"
 };
 

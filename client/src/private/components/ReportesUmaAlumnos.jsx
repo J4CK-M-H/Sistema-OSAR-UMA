@@ -61,8 +61,20 @@ export const ReportesUmaAlumnos = () => {
   });
 
   const [globalFilterValuePrepago, setGlobalFilterValuePrepago] = useState([]);
-  const [globalFilterValueSegundaEspecialidad, setGlobalFilterValueSegundaEspecialidad] = useState([]);
-  const [globalFilterValueMaestria, setGlobalFilterValueMaestria] = useState([]);
+  const [
+    globalFilterValueSegundaEspecialidad,
+    setGlobalFilterValueSegundaEspecialidad,
+  ] = useState([]);
+  const [globalFilterValueMaestria, setGlobalFilterValueMaestria] = useState(
+    []
+  );
+
+  let copyBtn = document.querySelector("#copy_btn");
+  const copy = () => {
+    // let copyText = document.querySelector("#my-table");
+    // copyText.select();
+    // document.execCommand("copy");
+  };
 
   const onGlobalFilterChangePrepago = (e) => {
     const value = e.target.value;
@@ -144,7 +156,6 @@ export const ReportesUmaAlumnos = () => {
 
     const obtener_reportes = async () => {
       try {
-
         let { data } = await useApi.post("reportes/general", { ...parametros });
         console.log(data);
         setReportePrepago(data.prepagos);
@@ -236,9 +247,9 @@ export const ReportesUmaAlumnos = () => {
 
   const exportarExcelPrepago = async (reporte, acumulados) => {
     const worksheet = xlsx.utils.json_to_sheet(reporte);
-    let totales = []
-    acumulados.forEach( total => {
-      totales.push(total)
+    let totales = [];
+    acumulados.forEach((total) => {
+      totales.push(total);
     });
 
     let data_con_totales = xlsx.utils.sheet_add_aoa(
@@ -246,7 +257,7 @@ export const ReportesUmaAlumnos = () => {
       [
         [
           "TOTAL",
-          ...totales
+          ...totales,
           // acumulado[0],
           // acumulado[1],
           // acumulado[2],
@@ -276,7 +287,13 @@ export const ReportesUmaAlumnos = () => {
     saveAsExcelFile(excelBuffer, "tabla");
   };
 
-  const templateHeader = (reporte, acumulado, columnas, globalFilter, globalFilterAction) => (
+  const templateHeader = (
+    reporte,
+    acumulado,
+    columnas,
+    globalFilter,
+    globalFilterAction
+  ) => (
     <div className="flex justify-between items-center">
       <div className="space-x-1 flex">
         <button
@@ -292,6 +309,9 @@ export const ReportesUmaAlumnos = () => {
         >
           <FaFilePdf />
           Pdf
+        </button>
+        <button id="copy_btn" onClick={copy}>
+          Copy
         </button>
       </div>
       <div className="p-inputgroup w-[250px]">
@@ -463,7 +483,13 @@ export const ReportesUmaAlumnos = () => {
               <DataTable
                 loading={loadingReportes}
                 header={() =>
-                  templateHeader(reportePrepago, AcumuladoReportePrepago, columnsPrepago, globalFilterValuePrepago, onGlobalFilterChangePrepago)
+                  templateHeader(
+                    reportePrepago,
+                    AcumuladoReportePrepago,
+                    columnsPrepago,
+                    globalFilterValuePrepago,
+                    onGlobalFilterChangePrepago
+                  )
                 }
                 filters={filtersPrepago}
                 value={reportePrepago}
@@ -492,7 +518,15 @@ export const ReportesUmaAlumnos = () => {
             <div className="card">
               <DataTable
                 loading={loadingReportes}
-                header={() => templateHeader(reporteSegEspecialidad, AcumuladoReporteSegEspecialidad, columnsSegundaEspecialidad, globalFilterValueSegundaEspecialidad, onGlobalFilterChangeSegundaEspecialidad)}
+                header={() =>
+                  templateHeader(
+                    reporteSegEspecialidad,
+                    AcumuladoReporteSegEspecialidad,
+                    columnsSegundaEspecialidad,
+                    globalFilterValueSegundaEspecialidad,
+                    onGlobalFilterChangeSegundaEspecialidad
+                  )
+                }
                 filters={filtersSegundaEspecialidad}
                 value={reporteSegEspecialidad}
                 showGridlines
@@ -518,7 +552,15 @@ export const ReportesUmaAlumnos = () => {
             <div className="card">
               <DataTable
                 loading={loadingReportes}
-                header={() => templateHeader(reporteMaestria, AcumuladoReporteMaestria, columnsMaestria,globalFilterValueMaestria, onGlobalFilterChangeMaestria)}
+                header={() =>
+                  templateHeader(
+                    reporteMaestria,
+                    AcumuladoReporteMaestria,
+                    columnsMaestria,
+                    globalFilterValueMaestria,
+                    onGlobalFilterChangeMaestria
+                  )
+                }
                 filters={filtersMaestria}
                 value={reporteMaestria}
                 showGridlines
