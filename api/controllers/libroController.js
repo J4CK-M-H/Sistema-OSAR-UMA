@@ -1,6 +1,7 @@
 import { QueryTypes } from "sequelize";
 import { connection } from "../db/database.js";
 import XLSX from "xlsx";
+import { request } from "express";
 
 const data_libro_6 = async (req = request, res) => {
   let query_libro_6 = "SELECT * FROM libro_6";
@@ -81,7 +82,7 @@ const registrar_libro_6 = async (req = request, res) => {
 
 const data_alumnos = async (req = request, res) => {
   let query_uma_alumnos =
-    "select concat(nombres, ' ', paterno,' ' ,materno) as nombres,codigo,nomesp  from uma_alumnos";
+    "select concat(paterno, ' ', materno,' ' ,nombres) as nombres,codigo,nomesp  from uma_alumnos";
   let resultado_uma_alumnos = await connection.query(query_uma_alumnos, {
     type: QueryTypes.SELECT,
     raw: false,
@@ -89,16 +90,88 @@ const data_alumnos = async (req = request, res) => {
   return res.status(200).json(resultado_uma_alumnos);
 };
 
-const data_alumnos_filtrados = async (req = request, res) => {
-  const { filtro } = req.body;
+const alumno_filtro_libro_5 = async (req = request, res) => {
+  const { codigo, nombres, carrera } = req.body;
 
-  let query_uma_alumnos = `select concat(paterno, ' ', materno,' ' ,nombres) as nombres,codigo, nomesp, c_dni  from uma_alumnos WHERE nombres LIKE '%${filtro}%' OR paterno  LIKE '%${filtro}%' OR materno LIKE '%${filtro}%' OR c_dni LIKE '%${filtro}%' OR nomesp LIKE '%${filtro}%' OR nomesp LIKE '%${filtro}%' LIMIT 10 `;
-  let resultado_uma_alumnos = await connection.query(query_uma_alumnos, {
+  let estudiante_por_codigo = `SELECT * FROM uma_alumnos WHERE codigo = '${codigo}' AND nomesp = '${carrera}'`;
+  let resultado_estudiante_por_codigo = await connection.query(
+    estudiante_por_codigo,
+    {
+      type: QueryTypes.SELECT,
+      raw: false,
+    }
+  );
+
+  let concatenados = `${codigo}${resultado_estudiante_por_codigo[0].c_codesp}`;
+
+  let periodo_egresado = `select periodo from egresados where concatenados = '${concatenados}'`;
+  let resultado_periodo_egresado = await connection.query(periodo_egresado, {
     type: QueryTypes.SELECT,
     raw: false,
   });
-  console.log(query_uma_alumnos);
-  return res.status(200).json(resultado_uma_alumnos);
+
+  if (resultado_periodo_egresado.length == 0) {
+    return res
+      .status(200)
+      .json(
+        `No hay resultado del estudiante como egresa en la carrera: ${carrera}`
+      );
+  }
+
+  return res.status(200).json({
+    estudiante: resultado_estudiante_por_codigo[0],
+    periodo: resultado_periodo_egresado[0].periodo,
+  });
+};
+
+const registrar_libro_5 = async (req = request, res) => {
+  const { nombres, observacion, periodo, fecha_emision, carrera } = req.body;
+
+  console.log(req.body);
+  let query_numero_correlativo = `SELECT * FROM libro_5 ORDER BY id DESC LIMIT 1`;
+  let numero_correlativo = await connection.query(query_numero_correlativo, {
+    type: QueryTypes.SELECT,
+    raw: false,
+  });
+
+  let num_correlativo = parseInt(numero_correlativo[0].numero_correlativo) + 1;
+
+  let anio = new Date().toLocaleDateString("es-PE", { year: "2-digit" });
+
+  if ((numero_correlativo.length = 0)) {
+    let query_insert_libro_5 = `INSERT INTO libro_5 values (DEFAULT, '1', '1-${anio}','${nombres}','${carrera}','${periodo}','${fecha_emision}','${observacion}')`;
+
+    let registro = await connection.query(query_insert_libro_5, {
+      type: QueryTypes.INSERT,
+      raw: false,
+    });
+    console.log(registro);
+    return res.status(200).json("OK");
+  }
+
+  let query_insert_libro_5 = `INSERT INTO libro_5 values (DEFAULT, '${num_correlativo}', '${num_correlativo}-${anio}','${nombres}','${carrera}','${periodo}','${fecha_emision}','${observacion}')`;
+  await connection.query(query_insert_libro_5, {
+    type: QueryTypes.INSERT,
+    raw: false,
+  });
+  return res.status(200).json({ msg: "Registro agregado" });
+};
+
+const filter_user_by_id = async (req = request, res) => {
+  let { id } = req.params;
+
+  try {
+    let query_filter_user_by_id = `SELECT * FROM libro_6 where id = ${id}`;
+    let filter_user_by_id = await connection.query(query_filter_user_by_id, {
+      type: QueryTypes.SELECT,
+      raw: false,
+    });
+    
+    return res.status(200).json(filter_user_by_id[0]);
+  } catch (error) {
+    return res.status(500).json({msg: "ERROR EN EL SERVIDOR"})    
+  }
+
 };
 
 export {
@@ -106,5 +179,7 @@ export {
   data_libro_6,
   data_libro_5,
   data_alumnos,
-  data_alumnos_filtrados,
+  alumno_filtro_libro_5,
+  registrar_libro_5,
+  filter_user_by_id,
 };

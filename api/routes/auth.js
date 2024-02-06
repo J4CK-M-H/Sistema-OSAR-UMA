@@ -6,7 +6,7 @@ import { obtenerUsuarios } from "../controllers/usuarioController.js";
 
 const router = Router();
 
-router.get('/session', verificarToken ,session);
+router.get('/session', [verificarToken ,session]);
 router.post('/login', login);
 router.get('/register', esAdmin ,register);
 

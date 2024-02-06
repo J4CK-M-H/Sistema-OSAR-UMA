@@ -11,7 +11,7 @@ const session = async (req, res) => {
 const login = async (req = request, res = response) => {
   const { username, password } = req.body;
 
-  let query = `SELECT u.usuario, u.estado, u.idusuario, u.nombre, r.nombrerol FROM usuarios as u 
+  let query = `SELECT u.usuario, u.estado, u.idusuario, u.idrol, u.nombre, r.nombrerol FROM usuarios as u 
   INNER JOIN rol as r ON r.idrol = u.idrol
   where u.usuario = "${username}" and u.password = "${password}"`;
 
@@ -33,8 +33,9 @@ const login = async (req = request, res = response) => {
     rol: validar_usuario[0].rol,
     idusuario: validar_usuario[0].idusuario,
     usuario: validar_usuario[0].usuario,
-    nombres: validar_usuario[0].nombre,
-    nombrerol: validar_usuario[0].nombrerol
+    nombre: validar_usuario[0].nombre,
+    nombrerol: validar_usuario[0].nombrerol,
+    idrol: validar_usuario[0].idrol
   };
 
   let data_user = { ...user, token };

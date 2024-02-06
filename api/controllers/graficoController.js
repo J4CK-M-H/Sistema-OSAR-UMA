@@ -83,8 +83,10 @@ const get_nuevos_convalidados = async (req = request, res) => {
   return res.status(200).json(nuevos_convalidantes);
 };
 
-const get_graficos_con_filtro = async (req = request, res) => {
+const graficos_por_defecto = async (req = request, res) => {
   const { cod_esp } = req.body;
+
+  console.log(req.usuario?.idrol);
 
   let filtro = "";
   if (cod_esp != undefined && cod_esp != null) {
@@ -118,9 +120,55 @@ const get_graficos_con_filtro = async (req = request, res) => {
     raw: false,
   });
 
-  return res
-    .status(200)
-    .json({estudiantes_matriculados: estudiantes_matriculados.reverse(), nuevos_convalidantes, recuperos_desercion});
+  return res.status(200).json({
+    estudiantes_matriculados: estudiantes_matriculados.reverse(),
+    nuevos_convalidantes,
+    recuperos_desercion,
+  });
+};
+
+const get_graficos_con_filtro = async (req = request, res) => {
+  const { cod_esp } = req.body;
+
+  console.log(req.usuario?.idrol);
+
+  let filtro = "";
+  if (cod_esp != undefined && cod_esp != null) {
+    filtro = `WHERE cod_esp = '${cod_esp}'`;
+  }
+
+  let query_estudiantes_matriculados = `SELECT periodo, sum(desertores) as desertores , sum(egresados) AS egresados , SUM(m_actual) AS matriculados FROM reporte_uma ${filtro} GROUP BY periodo ORDER BY periodo DESC LIMIT 6`;
+
+  let query_nuevos_convalidantes = `SELECT * FROM (SELECT periodo, SUM(cachimbos) AS cachimbos, SUM(traslados) AS convalidantes FROM reporte_uma ${filtro} GROUP BY periodo ORDER BY periodo DESC LIMIT 6) AS subquery ORDER BY periodo ASC`;
+
+  let query_recuperos_desercion = `SELECT * FROM (SELECT periodo, (SUM(cachimbos)+SUM(traslados)) AS crecimiento, SUM(desertores) AS desercion_t, SUM(recuperos) AS recuperos_t FROM reporte_uma ${filtro} GROUP BY periodo ORDER BY periodo DESC LIMIT 6) AS subquery ORDER BY periodo ASC`;
+
+  let estudiantes_matriculados = await connection.query(
+    query_estudiantes_matriculados,
+    {
+      type: QueryTypes.SELECT,
+      raw: false,
+    }
+  );
+
+  let nuevos_convalidantes = await connection.query(
+    query_nuevos_convalidantes,
+    {
+      type: QueryTypes.SELECT,
+      raw: false,
+    }
+  );
+
+  let recuperos_desercion = await connection.query(query_recuperos_desercion, {
+    type: QueryTypes.SELECT,
+    raw: false,
+  });
+
+  return res.status(200).json({
+    estudiantes_matriculados: estudiantes_matriculados.reverse(),
+    nuevos_convalidantes,
+    recuperos_desercion,
+  });
 };
 
 export {
@@ -129,4 +177,5 @@ export {
   get_recuperos_desercion,
   get_nuevos_convalidados,
   get_graficos_con_filtro,
+  graficos_por_defecto,
 };

@@ -10,6 +10,7 @@ import { run_connection } from "./db/database.js";
 import fileUpload from "express-fileupload";
 import cors from "cors";
 
+run_connection();
 const app = express();
 app.use(cors({
   origin: 'http://192.168.1.4:5173',
@@ -17,7 +18,6 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(fileUpload());
-run_connection();
 
 app.use("/api/auth", authRoutes);
 app.use("/api/usuario", usuarioRoutes);

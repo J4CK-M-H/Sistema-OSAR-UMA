@@ -25,11 +25,12 @@ import {
   validado_by_id,
   validar_estudiante,
 } from "../controllers/admisionController.js";
+import validarToken from "../middlewares/verificar-token.js";
 
 const router = Router();
 
 // CHECKING ADMISION
-router.get("/checking_admision", checking_admision);
+router.get("/checking_admision", [validarToken, checking_admision]);
 router.put("/checking_admision/update_dj1/:id", update_dj1);
 router.put("/checking_admision/update_ch_edni/:id", update_ch_edni);
 router.put("/checking_admision/update_ch_secu/:id", update_ch_secu);
@@ -45,19 +46,19 @@ router.get("/checking_admision/get_descuentos_modalidades", get_descuentos_modal
 router.get("/checking_admision/validado_by_id/:id", validado_by_id);
 
 // LISTA ADMISION
-router.get("/lista_admision", lista_admision);
-router.post("/lista_admision/update_estado_entrevista/:id", update_estado_entrevista);
+router.get("/lista_admision", [validarToken ,lista_admision]);
+router.post("/lista_admision/update_estado_entrevista/:id", [validarToken, update_estado_entrevista]);
 router.post("/lista_admision/agregar_estudiante", agregar_estudiante);
 router.get("/lista_admision/obtener_carreras", obtener_carreras);
 
 // REPORTE ADMISION
 router.get("/reporte_admision/get_periodos", get_periodos);
-router.post("/reporte_admision/reporte_general", reporte_general);
+router.post("/reporte_admision/reporte_general", [reporte_general]);
 router.post("/reporte_admision/update_lead/:id", update_lead);
 
 // ADMINISTRACION PROYECCIÓN
-router.get("/administracion_proyeccion/lista_proyeccion", lista_proyeccion);
-router.get("/administracion_proyeccion/cargar_carreras", cargar_carreras);
+router.get("/administracion_proyeccion/lista_proyeccion", [validarToken, lista_proyeccion]);
+router.get("/administracion_proyeccion/cargar_carreras", [validarToken, cargar_carreras]);
 router.post("/administracion_proyeccion/agregar_proyeccion", agregar_proyeccion);
 router.post("/administracion_proyeccion/buscar_proyeccion/:id", buscar_proyeccion);
 router.put("/administracion_proyeccion/editar_proyeccion/:id", editar_proyeccion);
