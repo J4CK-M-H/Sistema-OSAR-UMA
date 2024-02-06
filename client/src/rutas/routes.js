@@ -14,7 +14,8 @@ export const PRIVATE = {
   LIBROS: "libros",
   LIBRO_6: "libro-6",
   LIBRO_5: "libro-5",
-  CERTIFICADO: "generar-certificado"
+  CERTIFICADO: "generar-certificado",
+  CORREO: "correo",
 };
 
 export const PUBLIC = {

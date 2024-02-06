@@ -120,7 +120,7 @@ export const ReporteAdmision = () => {
       setS3Lead(data.leads_matriculados[5]);
       setS4Lead(data.leads_matriculados[6]);
       setS6Lead(data.leads_matriculados[7]);
-      setS5Lead(data.leads_matriculados[8]);
+      // setS5Lead(data.leads_matriculados[8]);
       console.log(data);
     } catch (error) {
       console.log(error);

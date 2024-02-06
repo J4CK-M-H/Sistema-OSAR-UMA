@@ -11,6 +11,11 @@ import { FileUpload } from "primereact/fileupload";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Calendar } from "primereact/calendar";
+import { MdEdit } from "react-icons/md";
+import { Dialog } from "primereact/dialog";
+import { InputTextarea } from "primereact/inputtextarea";
+import { FilterMatchMode } from "primereact/api";
+import { FaFilter } from "react-icons/fa6";
 
 const opciones = [
   { name: "ASISTENTE", code: "ASISTENTE" },
@@ -24,23 +29,63 @@ export const Libro6 = () => {
 
   const toastConfirm = useRef(null);
 
+  const [visible, setVisible] = useState(false);
+
   const [actionModal, setActionModal] = useState(false);
   const [selectedParticipacion, setSelectedParticipacion] = useState("");
   const [creditosModal, setCreditosModal] = useState("");
   const [nombreTallerModal, setNombreTallerModal] = useState("");
   const [fechaTaller, setFechaTaller] = useState("");
   const [escuelaOrganizada, setEscuelaOrganizada] = useState("");
-  const [fechaEmision, setFechaEmision] = useState(new Date().toLocaleDateString());
+  const [fechaEmision, setFechaEmision] = useState(
+    new Date().toLocaleDateString()
+  );
+
+  const [nombreEditar, setNombreEditar] = useState("");
+  const [escuelaEditar, setEscuelaEditar] = useState("");
+  const [tallerEditar, setTallerEditar] = useState("");
+  const [notaEditar, setNotaEditar] = useState("");
+  const [creditosEditar, setCreditosEditar] = useState("");
+  const [fechaTallerEditar, setFechaTallerEditar] = useState("");
+  const [FechaEmisionEditar, setFechaEmisionEditar] = useState("");
+  const [observacionEditar, setObservacionEditar] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [libros, setLibros] = useState([]);
+
+  // FILTRO
+  const [filtersLibro6, setFiltersLibro6] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  });
+
+  const [globalFilterValueFiltro6, setGlobalFilterValueFiltro6] = useState([]);
+
+  const onGlobalFilterChangeLibro6 = (e) => {
+    const value = e.target.value;
+    let _filters = { ...filtersLibro6 };
+
+    _filters["global"].value = value;
+
+    setFiltersLibro6(_filters);
+    setGlobalFilterValueFiltro6(value);
+  };
 
   const toastLibroRegistrado = () => toast.success("Libro Registrado");
 
   const obtener_datos_libro_6 = async () => {
     setLoading(true);
+
+    const token = await JSON.parse(localStorage.getItem("user"));
+    
+    let config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.token}`,
+      },
+    };
+
     try {
-      let { data } = await useApi("libro/data_libro_6");
+      let { data } = await useApi("libro/data_libro_6", config);
       setLibros(data);
     } catch (error) {
       console.log(error);
@@ -81,7 +126,7 @@ export const Libro6 = () => {
       toastLibroRegistrado();
     } catch (error) {
       console.log(error);
-    }finally{
+    } finally {
       obtener_datos_libro_6();
     }
   };
@@ -129,7 +174,11 @@ export const Libro6 = () => {
         {
           creditos: creditosModal,
           fechaEmision,
-          fechaTaller: `${new Date(fechaTaller[0]).toLocaleDateString()} - ${new Date(fechaTaller[1]).toLocaleDateString()}`,
+          fechaTaller: `${new Date(
+            fechaTaller[0]
+          ).toLocaleDateString()} - ${new Date(
+            fechaTaller[1]
+          ).toLocaleDateString()}`,
           participacion: selectedParticipacion.code,
           escuelaOrganizadora: escuelaOrganizada,
           nombreTaller: nombreTallerModal,
@@ -139,32 +188,94 @@ export const Libro6 = () => {
       );
     } catch (error) {
       console.log(error);
-    }finally {
+    } finally {
       obtener_datos_libro_6();
-      setActionModal(true)
+      setActionModal(true);
+      setCreditosModal("");
+      setEscuelaOrganizada("");
+      setNombreTallerModal("");
+      // setFechaEmision("");
+      setFechaTaller("");
       setTimeout(() => {
-        setActionModal(false)
+        setActionModal(false);
       }, 4500);
     }
-  };
-
-  const modal = () => {
-    return (
-      <div className="h-[100vh] bg-black w-full z-40 absolute top-0">
-        <h1 className="text-6xl">qweqwes</h1>
-       
-      </div>
-    );
   };
 
   if (actionModal) {
     return (
       <div className="h-[100vh] bg-white w-full z-40 left-0 absolute top-0 flex flex-col justify-center items-center space-y-3">
-        <h2 className="text-5xl font-bold">Se esta subiendo el archivo, mi rey!</h2>
-        <img src={"/gatito.gif"} alt="gatito_besucon" className="border-2 border-white" />
+        <h2 className="text-5xl font-bold">
+          Se esta subiendo el archivo, mi rey!
+        </h2>
+        <img
+          src={"/gatito.gif"}
+          alt="gatito_besucon"
+          className="border-2 border-white"
+        />
       </div>
     );
   }
+
+  const searchUser = async ({ id }) => {
+    console.log(id);
+    try {
+      let { data } = await useApi.post(`/libro/filter_user_by_id/${id}`);
+      setNombreEditar(data.nombres);
+      setEscuelaEditar(data.escuela_organizadora);
+      setTallerEditar(data.nombre_taller);
+      setNotaEditar(data.nota);
+      setCreditosEditar(data.creditos);
+      setFechaTallerEditar(data.fecha_taller);
+      setFechaEmisionEditar(data.fecha_emision);
+      setObservacionEditar(data.observacion);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const rellenar_modal = (data) => {
+    console.log(data);
+
+    // try {
+
+    // } catch (error) {
+
+    // }
+  };
+
+  const templateHeader = (globalFilter, globalFilterAction) => (
+    <div className="flex justify-end">
+      <div className="p-inputgroup w-[250px]">
+        <span className="p-inputgroup-addon">
+          <FaFilter />
+        </span>
+        <InputText
+          type="search"
+          value={globalFilter}
+          onChange={globalFilterAction}
+          placeholder="Filtro global"
+        />
+      </div>
+    </div>
+  );
+
+  const accionesTemplate = (data) => {
+    return (
+      <div className="flex">
+        <button
+          onClick={() => {
+            searchUser(data);
+            setVisible(true);
+          }}
+          className="scale-150 bg-blue-600 text-white p-1 rounded-sm mx-auto"
+        >
+          <MdEdit />
+        </button>
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-4">
@@ -194,6 +305,7 @@ export const Libro6 = () => {
                 <InputText
                   value={nombreTallerModal}
                   onChange={(event) => setNombreTallerModal(event.target.value)}
+                  className="placeholder:text-sm"
                   placeholder="Nombre del taller"
                 />
               </div>
@@ -206,6 +318,7 @@ export const Libro6 = () => {
                 <InputText
                   value={creditosModal}
                   onChange={(event) => setCreditosModal(event.target.value)}
+                  className="placeholder:text-sm"
                   placeholder="Créditos"
                 />
               </div>
@@ -214,13 +327,14 @@ export const Libro6 = () => {
                 <span className="p-inputgroup-addon bg-rose-700 overflow-hidden">
                   <TbListLetters className="text-white scale-150" />
                 </span>
-                <Calendar value={fechaTaller} placeholder="Fecha de taller desde - hasta" onChange={(e) => setFechaTaller(e.value)} selectionMode="range" readOnlyInput />
-                {/* <InputText
+                <Calendar
                   value={fechaTaller}
-                  
-                  onChange={(event) => setFechaTaller(event.target.value)}
-                  placeholder="Fecha del taller"
-                /> */}
+                  placeholder="Fecha de taller desde - hasta"
+                  onChange={(e) => setFechaTaller(e.value)}
+                  selectionMode="range"
+                  showButtonBar 
+                  // readOnlyInput
+                />
               </div>
             </div>
             <div className="flex gap-x-6">
@@ -232,6 +346,7 @@ export const Libro6 = () => {
                   value={escuelaOrganizada}
                   onChange={(event) => setEscuelaOrganizada(event.target.value)}
                   placeholder="Escuela Organizadora"
+                  className="placeholder:text-sm"
                 />
               </div>
 
@@ -248,11 +363,7 @@ export const Libro6 = () => {
             </div>
             <div className="upload_section">
               <FileUpload
-                // url={ uploadLibro6 }
                 ref={fileUpload}
-                // onClick={ () => alert('s') }
-                // accept="xlsx/*"
-                // maxFileSize={1000000}
                 emptyTemplate={
                   <p className="m-0 text-center font-semibold">
                     Escoge un archivo
@@ -291,7 +402,20 @@ export const Libro6 = () => {
         <DataTable
           value={libros}
           paginator
+          header={() =>
+            templateHeader(globalFilterValueFiltro6, onGlobalFilterChangeLibro6)
+          }
+          globalFilterFields={[
+            "nombres",
+            "fecha_taller",
+            "escuela_organizadora",
+            "participacion",
+            "nombre_taller",
+            "creditos",
+            "fecha_emision",
+          ]}
           showGridlines
+          filters={filtersLibro6}
           rows={5}
           rowsPerPageOptions={[5, 10]}
           loading={loading}
@@ -304,6 +428,11 @@ export const Libro6 = () => {
           <Column
             field="nombres"
             header="Nombre completo"
+            headerClassName="bg-rose-700 text-white"
+          />
+          <Column
+            field="creditos"
+            header="Nota"
             headerClassName="bg-rose-700 text-white"
           />
           <Column
@@ -331,8 +460,121 @@ export const Libro6 = () => {
             header="Fecha emisión"
             headerClassName="bg-rose-700 text-white rounded-r"
           />
+          <Column
+            field="null"
+            header="Acciones"
+            headerClassName="bg-rose-700 text-white rounded-r"
+            body={accionesTemplate}
+          />
         </DataTable>
         <ToastContainer autoClose={1200} />
+
+        <Dialog
+          header="Header"
+          visible={visible}
+          className="w-[80%] md:w-[750px]"
+          onHide={() => setVisible(false)}
+        >
+          <div className="mt-6 space-y-6">
+            <div className="flex gap-x-6">
+              <div className="p-inputgroup flex-1">
+                <span className="p-inputgroup-addon bg-rose-700">
+                  <MdOutlineNumbers className="text-white" />
+                </span>
+                <InputText
+                  value={nombreEditar}
+                  onChange={(event) => setNombreEditar(event.target.value)}
+                  placeholder="Nombre completo"
+                />
+              </div>
+
+              <div className="p-inputgroup flex-1">
+                <span className="p-inputgroup-addon bg-rose-700">
+                  <MdOutlineNumbers className="text-white" />
+                </span>
+                <InputText
+                  value={escuelaEditar}
+                  onChange={(event) => setEscuelaEditar(event.target.value)}
+                  placeholder="Escuela Organizadora"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-x-6">
+              <div className="p-inputgroup flex-1">
+                <span className="p-inputgroup-addon bg-rose-700">
+                  <MdOutlineNumbers className="text-white" />
+                </span>
+                <InputText
+                  value={tallerEditar}
+                  onChange={(event) => setTallerEditar(event.target.value)}
+                  placeholder="Taller"
+                />
+              </div>
+
+              <div className="p-inputgroup flex-1">
+                <span className="p-inputgroup-addon bg-rose-700">
+                  <MdOutlineNumbers className="text-white" />
+                </span>
+                <InputText
+                  value={escuelaOrganizada}
+                  onChange={(event) => setEscuelaOrganizada(event.target.value)}
+                  placeholder="Nota"
+                />
+              </div>
+
+              <div className="p-inputgroup flex-1">
+                <span className="p-inputgroup-addon bg-rose-700">
+                  <MdOutlineNumbers className="text-white" />
+                </span>
+                <InputText
+                  value={creditosEditar}
+                  onChange={(event) => setCreditosEditar(event.target.value)}
+                  placeholder="Créditos"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-x-6">
+              <div className="p-inputgroup flex-1">
+                <span className="p-inputgroup-addon bg-rose-700">
+                  <MdOutlineNumbers className="text-white" />
+                </span>
+                <InputText
+                  value={fechaTallerEditar}
+                  onChange={(event) => fechaTallerEditar(event.target.value)}
+                  placeholder="Fecha del Taller"
+                />
+              </div>
+
+              <div className="p-inputgroup flex-1">
+                <span className="p-inputgroup-addon bg-rose-700">
+                  <MdOutlineNumbers className="text-white" />
+                </span>
+                <InputText
+                  value={FechaEmisionEditar}
+                  onChange={(event) =>
+                    setFechaEmisionEditar(event.target.value)
+                  }
+                  placeholder="Fecha Emisión"
+                />
+              </div>
+            </div>
+
+            <InputTextarea
+              value={observacionEditar}
+              onChange={(e) => setObservacionEditar(e.target.value)}
+              placeholder="Observación"
+              className="w-full resize-none"
+              rows={5}
+              cols={30}
+            />
+
+            <button className="w-full rounded-sm text-center bg-rose-700 text-white py-2  font-semibold">
+              Actualizar
+            </button>
+          </div>
+        </Dialog>
       </Card>
     </div>
   );

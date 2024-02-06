@@ -13,24 +13,23 @@ function App() {
   if (loadingAuth) return;
 
   return (
-    <Routes>
+      <Routes>
+        {/* RUTAS PRIVADAS */}
+        <Route path="/" element={<Navigate to={`${PRIVATE.PRIVATE}`} />} />
+        <Route element={<GuardRoutes />}>
+          <Route path={`${PRIVATE.PRIVATE}/*`} element={<PrivateRoutes />} />
+        </Route>
 
-      {/* RUTAS PRIVADAS */}
-      <Route path="/" element={<Navigate to={`${PRIVATE.PRIVATE}`} />} />
-      <Route element={<GuardRoutes />}>
-        <Route path={`${PRIVATE.PRIVATE}/*`} element={<PrivateRoutes />} />
-      </Route>
-
-      {/* RUTAS PUBLICAS */}
-      <Route
-        path={PUBLIC.LOGIN}
-        element={
-          auth?.usuario ? <Navigate to={`/${PRIVATE.PRIVATE}`} /> : <Login />
-        }
-      />
+        {/* RUTAS PUBLICAS */}
+        <Route
+          path={PUBLIC.LOGIN}
+          element={
+            auth?.usuario ? <Navigate to={`/${PRIVATE.PRIVATE}`} /> : <Login />
+          }
+        />
         <Route path={PUBLIC.NOT_FOUND} element={<NotFound />} />
         <Route path="*" element={<Navigate replace to={PUBLIC.NOT_FOUND} />} />
-    </Routes>
+      </Routes>
   );
 }
 

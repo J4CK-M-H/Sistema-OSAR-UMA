@@ -53,9 +53,19 @@ export const AdministracionProyeccion = () => {
   const [diciembre, setDiciembre] = useState(0);
 
   let get_lista_proyeccion = async () => {
+    const token = JSON.parse(localStorage.getItem("user"));
+
+    let config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.token}`,
+      },
+    };
+
     try {
       let { data } = await useApi(
-        "admision/administracion_proyeccion/lista_proyeccion"
+        "admision/administracion_proyeccion/lista_proyeccion",
+        config
       );
       setListaProyeccion(data);
     } catch (error) {
@@ -69,9 +79,18 @@ export const AdministracionProyeccion = () => {
 
   const buscarProyeccion = async (id) => {
     cargar_carreras();
+
+    const token = JSON.parse(localStorage.getItem("user"));
+
+    let config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.token}`,
+      },
+    };
     try {
       let { data } = await useApi.post(
-        `admision/administracion_proyeccion/buscar_proyeccion/${id}`
+        `admision/administracion_proyeccion/buscar_proyeccion/${id}`, config
       );
 
       setId(data.idproy);
@@ -108,7 +127,7 @@ export const AdministracionProyeccion = () => {
       setListaProyeccion(listaProyeccionActualizada);
     } catch (error) {
       console.log(error);
-    }finally{
+    } finally {
       toastProyeccionEliminada();
     }
   };
@@ -189,9 +208,19 @@ export const AdministracionProyeccion = () => {
   };
 
   const cargar_carreras = async () => {
+    const token = JSON.parse(localStorage.getItem("user"));
+
+    let config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.token}`,
+      },
+    };
+
     try {
       let { data } = await useApi(
-        "admision/administracion_proyeccion/cargar_carreras"
+        "admision/administracion_proyeccion/cargar_carreras",
+        config
       );
       setCarreras(data);
     } catch (error) {

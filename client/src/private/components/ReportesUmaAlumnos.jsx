@@ -139,45 +139,55 @@ export const ReportesUmaAlumnos = () => {
   ];
 
   useEffect(() => {
-    let parametros = JSON.parse(localStorage.getItem("parametros"));
-    const obtener_periodos = async () => {
-      setLoadingPeriodos(true);
-      try {
-        let { data } = await useApi("reportes/periodos_reporte");
-        setPeriodos(data);
-        setSelectedPeriodo({ periodo: parametros.periodo });
-        setRadioOption(parametros.radioOption);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoadingPeriodos(false);
-      }
-    };
-
-    const obtener_reportes = async () => {
-      try {
-        let { data } = await useApi.post("reportes/general", { ...parametros });
-        console.log(data);
-        setReportePrepago(data.prepagos);
-        setReporteSegEspecialidad(data.segunda_especialidad);
-        setReporteMaestria(data.maestrias);
-
-        // ACUMULADOS
-        setAcumuladoReportePrepago(prepado_acumulado(data.prepagos));
-        setAcumuladoReporteMaestria(maestria_acumulado(data.maestrias));
-        setAcumuladoReporteSegEspecialidad(
-          segunda_especialidad_acumulado(data.segunda_especialidad)
-        );
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoadingReportes(false);
-      }
-    };
-
     obtener_periodos();
     obtener_reportes();
   }, []);
+
+  const obtener_periodos = async () => {
+    let parametros = JSON.parse(localStorage.getItem("parametros"));
+    setLoadingPeriodos(true);
+
+    try {
+      let { data } = await useApi("reportes/periodos_reporte");
+      setPeriodos(data);
+      setSelectedPeriodo({ periodo: parametros.periodo });
+      setRadioOption(parametros.radioOption);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingPeriodos(false);
+    }
+  };
+
+  const obtener_reportes = async () => {
+    let parametros = JSON.parse(localStorage.getItem("parametros"));
+    const token = JSON.parse(localStorage.getItem("user"));
+    
+    let config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.token}`,
+      },
+    };
+    try {
+      let { data } = await useApi.post("reportes/general", { ...parametros }, config);
+      setReportePrepago(data.prepagos);
+      setReporteSegEspecialidad(data.segunda_especialidad);
+      setReporteMaestria(data.maestrias);
+
+      // ACUMULADOS
+      setAcumuladoReportePrepago(prepado_acumulado(data.prepagos));
+      setAcumuladoReporteMaestria(maestria_acumulado(data.maestrias));
+      setAcumuladoReporteSegEspecialidad(
+        segunda_especialidad_acumulado(data.segunda_especialidad)
+      );
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingReportes(false);
+    }
+  };
+
   // REPORTE PDF
 
   const exportPdf = async (reporte, acumulados, columnas) => {
@@ -481,7 +491,6 @@ export const ReportesUmaAlumnos = () => {
           <AccordionTab header="Prepago">
             <div className="card">
               <DataTable
-                loading={loadingReportes}
                 header={() =>
                   templateHeader(
                     reportePrepago,
@@ -517,7 +526,6 @@ export const ReportesUmaAlumnos = () => {
           <AccordionTab header="Segunda Especialidad">
             <div className="card">
               <DataTable
-                loading={loadingReportes}
                 header={() =>
                   templateHeader(
                     reporteSegEspecialidad,
@@ -551,7 +559,6 @@ export const ReportesUmaAlumnos = () => {
           <AccordionTab header="Maestria">
             <div className="card">
               <DataTable
-                loading={loadingReportes}
                 header={() =>
                   templateHeader(
                     reporteMaestria,

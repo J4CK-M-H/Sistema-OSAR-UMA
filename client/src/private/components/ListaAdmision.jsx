@@ -56,8 +56,18 @@ export const ListaAdmision = () => {
   }, []);
   const listaAdmisionData = async () => {
     setLoadListaAdmision(true);
+
+    const token = JSON.parse(localStorage.getItem("user"));
+
+    let config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.token}`,
+      },
+    };
+
     try {
-      let { data } = await useApi("/admision/lista_admision");
+      let { data } = await useApi("/admision/lista_admision", config);
       setListaAdmision(data);
     } catch (error) {
       console.log(error);
@@ -87,10 +97,20 @@ export const ListaAdmision = () => {
 
   const templateBody = (rowData) => {
     let cambiarEstado = async () => {
+      const token = await JSON.parse(localStorage.getItem("user"));
+
+      let config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token.token}`,
+        },
+      };
+
       try {
         await useApi.post(
           `admision/lista_admision/update_estado_entrevista/${rowData.id}`,
-          { estado_entrevista: rowData.estado_entrevista == 1 ? 0 : 1 }
+          { estado_entrevista: rowData.estado_entrevista == 1 ? 0 : 1 },
+          config
         );
 
         let lista_admision_actualizada = listaAdmision.map((item) =>
@@ -170,6 +190,14 @@ export const ListaAdmision = () => {
       </span>
     </div>
   );
+
+  const bodyPuntaje = (rowData) => {
+    return (
+      <div className={`${rowData.total_preguntas >= 12 ? 'text-green-600' : 'text-red-600' } font-semibold`}>
+        <p>{rowData.total_preguntas}</p>
+      </div>
+    );
+  };
 
   const agregar_estudiante = async () => {
     try {
@@ -275,6 +303,7 @@ export const ListaAdmision = () => {
                   field="total_preguntas"
                   header="Puntaje"
                   headerClassName="bg-rose-700 text-white"
+                  body={bodyPuntaje}
                 />
                 <Column
                   field="estado"

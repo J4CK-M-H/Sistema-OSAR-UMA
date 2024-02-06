@@ -38,8 +38,10 @@ export const ReportesSuneduMinedu = () => {
 
   useEffect(() => {
     let parametros = JSON.parse(localStorage.getItem("parametros"));
+
     const obtener_periodos = async () => {
       setLoadingPeriodos(true);
+
       try {
         let { data } = await useApi("reportes/periodos_reporte");
         setPeriodos(data);
@@ -52,10 +54,22 @@ export const ReportesSuneduMinedu = () => {
     };
 
     const obtener_reportes = async () => {
+      const token = await JSON.parse(localStorage.getItem("user"));
+
+      let config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token.token}`,
+        },
+      };
       try {
-        let { data } = await useApi.post("reportes/reporte_sunedu_minedu", {
-          periodo: parametros.periodo,
-        });
+        let { data } = await useApi.post(
+          "reportes/reporte_sunedu_minedu",
+          {
+            periodo: parametros.periodo,
+          },
+          config
+        );
         let footerPrepago = data.prepago.pop();
         let footerSegundaEspecialidad = data.segunda_especialidad.pop();
         let footerMaestria = data.maestria.pop();
@@ -127,10 +141,19 @@ export const ReportesSuneduMinedu = () => {
       })
     );
 
+    const token = await JSON.parse(localStorage.getItem("user"));
+
+    let config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.token}`,
+      },
+    };
+
     try {
       let { data } = await useApi.post(`/reportes/reporte_sunedu_minedu`, {
         periodo,
-      });
+      }, config);
       let footerPrepago = data.prepago.pop();
       let footerSegundaEspecialidad = data.segunda_especialidad.pop();
       let footerMeastria = data.maestria.pop();

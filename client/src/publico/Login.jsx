@@ -9,15 +9,14 @@ import axios from "axios";
 import AuthContext from "../context/AuthContext";
 import { useApi } from "../hooks/useAxios";
 // LOGO
-import logo from '../assets/images/UmaLogoC.svg'
-
+import logo from "../assets/images/UmaLogoC.svg";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const toast = useRef(null);
 
-  let { setAuth } = useContext(AuthContext);
+  let { setAuth, setAuthLoading } = useContext(AuthContext);
 
   let navigate = useNavigate();
 
@@ -30,13 +29,12 @@ const Login = () => {
     });
   };
 
-
   const handleFormLogin = async (event) => {
     event.preventDefault();
 
     if ([username.trim(), password.trim()].some((field) => field === "")) {
-      let message = 'Ingrese todo los campos'
-      showError(message)
+      let message = "Ingrese todo los campos";
+      showError(message);
       return;
     }
 
@@ -46,18 +44,17 @@ const Login = () => {
     };
 
     try {
-       const { data } = await useApi.post('/auth/login', user)
-       localStorage.setItem('user', JSON.stringify(data));
-       console.log(data);
-       setAuth(data);
-       navigate("/");
+      const { data } = await useApi.post("/auth/login", user);
+      localStorage.setItem("user", JSON.stringify(data));
+      setAuth(data);
+      // navigate('/private/home')
+      console.log(data)
     } catch (error) {
-      if(error.response.data){
-        showError(error.response.data?.message)
+      // console.log(error);
+      if (error.response.data) {
+        showError(error.response.data?.message);
       }
-      console.log(error);
     }
-
   };
 
   return (
@@ -67,7 +64,7 @@ const Login = () => {
         <form onSubmit={handleFormLogin} className="sm:w-[450px] space-y-4 p-4">
           <div className="p-inputgroup flex-1">
             <span className="p-inputgroup-addon bg-rose-700">
-              <FiUser size={20} color="white"/>
+              <FiUser size={20} color="white" />
             </span>
             <InputText
               placeholder="Username"
@@ -95,7 +92,7 @@ const Login = () => {
         </form>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

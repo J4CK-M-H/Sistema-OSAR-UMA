@@ -160,8 +160,18 @@ export const ChekingAdmision = () => {
 
   const checking_admision_data = async () => {
     setLoading(true);
+
+    const token = await JSON.parse(localStorage.getItem("user"));
+
+    let config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.token}`,
+      },
+    };
+
     try {
-      let { data } = await useApi(`admision/checking_admision`);
+      let { data } = await useApi(`admision/checking_admision`, config);
       setValidados(data.validados);
       setNoValidados(data.no_validados);
     } catch (error) {

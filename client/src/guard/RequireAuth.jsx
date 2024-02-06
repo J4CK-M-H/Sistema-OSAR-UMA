@@ -5,14 +5,16 @@ import AuthContext from '../context/AuthContext';
 
 export const RequireAuth = ({ roles }) => {
 
-  let { auth } = useContext(AuthContext);
+  let { auth, loadingAuth } = useContext(AuthContext);
   
-  let token = JSON.parse(localStorage.getItem("usuario") ?? localStorage.setItem("usuario", "{}"));
-  
+  let token = JSON.parse(localStorage.getItem("user"))
+  console.log(token)
+
+
   return (
-    roles.includes( (auth?.idusuario) )
+    roles.includes( (auth?.idrol) )
     ? <Outlet />
-    : auth?.usuario
+    : auth?.idrol
       ? <Navigate to={`${PRIVATE.UNAUTHORIZED}`}  replace />
       : <Navigate to={PUBLIC.LOGIN} replace/>
   )

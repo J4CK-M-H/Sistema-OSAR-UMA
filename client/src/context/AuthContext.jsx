@@ -11,33 +11,35 @@ const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const Authenticate = async () => {
-      setloadingAuth(true);
-      const token = JSON.parse(localStorage.getItem("user"));
-      if (!token) {
-        setloadingAuth(false);
-        return;
-      }
-
-      let config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token.token}`,
-        },
-      };
-
-      try {
-        const { data } = await useApi("/auth/session", config);
-        setAuth(data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setloadingAuth(false);
-      }
-    };
-
+    console.log('auth context')
     Authenticate();
   }, []);
+
+  const Authenticate = async () => {
+    setloadingAuth(true);
+    const token = JSON.parse(localStorage.getItem("user"));
+    console.log(auth)
+    if (!token) {
+      setloadingAuth(false);
+      return;
+    }
+
+    let config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.token}`,
+      },
+    };
+
+    try {
+      const { data } = await useApi("/auth/session", config);
+      setAuth(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setloadingAuth(false);
+    }
+  };
 
   const closeSession = () => {
     setAuth();

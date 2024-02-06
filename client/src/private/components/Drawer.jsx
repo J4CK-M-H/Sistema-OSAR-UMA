@@ -4,29 +4,25 @@ import { Link } from "react-router-dom";
 import { PRIVATE } from "../../rutas/routes";
 import React, { useContext } from "react";
 import { FaUsers } from "react-icons/fa";
-import { FaHome } from "react-icons/fa";
 import { IoDocumentTextSharp } from "react-icons/io5";
 import AuthContext from "../../context/AuthContext";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { HiDocumentDuplicate } from "react-icons/hi2";
 import { FaArrowTurnDown } from "react-icons/fa6";
-import { IoIosListBox } from "react-icons/io";
 import { FaListAlt } from "react-icons/fa";
 import { FaChartBar } from "react-icons/fa";
-import { FaClipboardList } from "react-icons/fa";
-import { CiCircleList } from "react-icons/ci";
 import { LuBookMarked } from "react-icons/lu";
 import { FiBook } from "react-icons/fi";
-import { Avatar } from "primereact/avatar";
 
 export const Drawer = ({ visible, setVisible }) => {
   const { auth, loadingAuth } = useContext(AuthContext);
 
   if (loadingAuth) return;
+
   const customHeader = (
     <React.Fragment>
       <h2 className="text-xl font-extrabold capitalize">
-        Hello, {auth?.nombre}
+        Hola, {auth?.nombre}
       </h2>
     </React.Fragment>
   );

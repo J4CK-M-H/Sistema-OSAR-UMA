@@ -153,7 +153,6 @@ const maestria_acumulado = (arrayValores) => {
       }
     }
   });
-  console.log([totalCicloI, totalCicloII, totalCicloIII, totalCicloIV, totalCiclos]);
   return [totalCicloI, totalCicloII, totalCicloIII, totalCicloIV, totalCiclos];
 };
 

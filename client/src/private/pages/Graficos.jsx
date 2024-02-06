@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { GraficoEstadisticasTotales } from "../components/GraficoEstadisticasTotales";
 import { GraficoNuevosConvalidados } from "../components/GraficoNuevosConvalidados";
 import { GraficoRecuperoDesercion } from "../components/GraficoRecuperoDesercion";
@@ -6,9 +6,10 @@ import { Dropdown } from "primereact/dropdown";
 import { Toast } from "primereact/toast";
 import { FaSearchengin } from "react-icons/fa6";
 import { useApi } from "../../hooks/useAxios";
+import AuthContext from "../../context/AuthContext";
 
 const carreras = [
-  { name: "TODAS LAS CARRERAS", code: null },
+  { name: "TODAS LAS CARRERAS", code: "" },
   { name: "ADMINISTRACION DE NEGOCIOS INTERNACIONALES", code: "E1" },
   { name: "ADMINISTRACION Y MARKETING", code: "E2" },
   { name: "CONTABILIDAD Y FINANZAS", code: "E3" },
@@ -47,11 +48,13 @@ const carreras = [
   },
 ];
 
-const Home = () => {
+export const Graficos = () => {
+  const { auth, loadingAuth } = useContext(AuthContext);
+
   const [loadingGraficos, setLoadingPeriodos] = useState(true);
 
   const [periodos, setPeriodos] = useState([]);
-  const [selectedCarrera, setSelectedCarrera] = useState(null);
+  const [selectedCarrera, setSelectedCarrera] = useState("");
   const [estudiantesMatriculados, setEstudiantesMatriculados] = useState([]);
 
   const [matriculados, setMatriculados] = useState([]);
@@ -71,76 +74,99 @@ const Home = () => {
   const toast = useRef(null);
 
   useEffect(() => {
-    const graficos = async () => {
-      try {
-        let { data } = await useApi.post("/graficos/graficos_con_filtro");
-        setEstudiantesMatriculados(data.estudiantes_matriculados);
-        setNuevosConvalidantes(data.nuevos_convalidantes);
-        setRecuperoDesercion(data.recuperos_desercion);
-
-        let periodoArray = data.estudiantes_matriculados.map((item) => {
-          return item.periodo;
-        });
-        console.log(data);
-        setPeriodos(periodoArray);
-
-        // ESTUDIANTES MATRICULADOS DATA
-        let desertoresArray = data.estudiantes_matriculados.map((item) => {
-          return `-${item.desertores}`;
-        });
-
-        let matriculadosArray = data.estudiantes_matriculados.map((item) => {
-          return item.matriculados;
-        });
-
-        let egresadosArray = data.estudiantes_matriculados.map((item) => {
-          return item.egresados;
-        });
-
-        setMatriculados(matriculadosArray);
-        setEgresados(egresadosArray);
-        setDesertores(desertoresArray);
-
-        // NUEVOS Y CONVALIDANTES
-        let array_nuevos = data.nuevos_convalidantes.map(
-          (item) => item.cachimbos
-        );
-        let array_convalidados = data.nuevos_convalidantes.map(
-          (item) => item.convalidantes
-        );
-        setNuevos(array_nuevos);
-        setConvalidantes(array_convalidados);
-
-        // RECUPERACIONES Y DESECIONES
-        let array_recuperos = data.recuperos_desercion.map(
-          (item) => item.recuperos_t
-        );
-        let array_deserciones = data.recuperos_desercion.map(
-          (item) => item.desercion_t
-        );
-        let array_crecimientos = data.recuperos_desercion.map(
-          (item) => item.crecimiento
-        );
-
-        setRecuperos(array_recuperos);
-        setDeserciones(array_deserciones);
-        setCrecimientos(array_crecimientos);
-
-        console.log(estudiantesMatriculados);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoadingPeriodos(false);
-      }
-    };
     graficos();
   }, []);
 
-  const handleSearch = async () => {
+  const graficos = async () => {
+    setLoadingPeriodos(true);
+    const token = JSON.parse(localStorage.getItem("user"));
+
+    console.log(token);
+
+    let config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.token}`,
+      },
+    };
+
     try {
-      let { data } = await useApi.post("/graficos/graficos_con_filtro", {
-        cod_esp: selectedCarrera.code,
+      let { data } = await useApi.get("graficos/graficos_por_defecto",config);
+      setEstudiantesMatriculados(data.estudiantes_matriculados);
+      setNuevosConvalidantes(data.nuevos_convalidantes);
+      setRecuperoDesercion(data.recuperos_desercion);
+
+      let periodoArray = data.estudiantes_matriculados.map((item) => {
+        return item.periodo;
       });
+      setPeriodos(periodoArray);
+
+      // ESTUDIANTES MATRICULADOS DATA
+      let desertoresArray = data.estudiantes_matriculados.map((item) => {
+        return `-${item.desertores}`;
+      });
+
+      let matriculadosArray = data.estudiantes_matriculados.map((item) => {
+        return item.matriculados;
+      });
+
+      let egresadosArray = data.estudiantes_matriculados.map((item) => {
+        return item.egresados;
+      });
+
+      setMatriculados(matriculadosArray);
+      setEgresados(egresadosArray);
+      setDesertores(desertoresArray);
+
+      // NUEVOS Y CONVALIDANTES
+      let array_nuevos = data.nuevos_convalidantes.map(
+        (item) => item.cachimbos
+      );
+      let array_convalidados = data.nuevos_convalidantes.map(
+        (item) => item.convalidantes
+      );
+      setNuevos(array_nuevos);
+      setConvalidantes(array_convalidados);
+
+      // RECUPERACIONES Y DESECIONES
+      let array_recuperos = data.recuperos_desercion.map(
+        (item) => item.recuperos_t
+      );
+      let array_deserciones = data.recuperos_desercion.map(
+        (item) => item.desercion_t
+      );
+      let array_crecimientos = data.recuperos_desercion.map(
+        (item) => item.crecimiento
+      );
+
+      setRecuperos(array_recuperos);
+      setDeserciones(array_deserciones);
+      setCrecimientos(array_crecimientos);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingPeriodos(false);
+    }
+  };
+
+  const handleSearch = async () => {
+    const token = JSON.parse(localStorage.getItem("user"));
+
+    let config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.token}`,
+      },
+    };
+
+    try {
+      let { data } = await useApi.post(
+        "/graficos/graficos_filtrado",
+        {
+          cod_esp: selectedCarrera.code,
+        },
+        config
+      );
       setEstudiantesMatriculados(data.estudiantes_matriculados);
       setNuevosConvalidantes(data.nuevos_convalidantes);
       setRecuperoDesercion(data.recuperos_desercion);
@@ -204,6 +230,11 @@ const Home = () => {
       JSON.stringify({ periodo: 20232, radioOption: "M" })
     );
 
+  if (loadingGraficos) {
+    return "cargando...";
+    // return <Spinner />;
+  }
+
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-semibold">Estadisticas Totales</h2>
@@ -233,7 +264,7 @@ const Home = () => {
         matriculados={matriculados}
         egresados={egresados}
         desertores={desertores}
-        loadingGraficos={loadingGraficos}
+        // loadingGraficos={loadingGraficos}
       />
       <div className="flex gap-x-6 flex-col md:flex-row">
         <GraficoNuevosConvalidados
@@ -252,4 +283,3 @@ const Home = () => {
   );
 };
 
-export default Home;

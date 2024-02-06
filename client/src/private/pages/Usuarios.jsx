@@ -6,7 +6,6 @@ import { FaFilter } from "react-icons/fa";
 import { InputText } from "primereact/inputtext";
 import { FilterMatchMode } from "primereact/api";
 import { useApi } from "../../hooks/useAxios";
-import { Button } from "primereact/button";
 import { FaTrashCan } from "react-icons/fa6";
 import { MdEdit } from "react-icons/md";
 import { ModalEditUsuario } from "../components/ModalEditUsuario";
@@ -52,9 +51,7 @@ export const Usuarios = () => {
       } catch (error) {
         console.log(error);
       } finally {
-        // setTimeout(() => {
         setLoading(false);
-        // }, 700);
       }
       console.log("usuarios");
     };

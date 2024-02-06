@@ -1,6 +1,6 @@
 import { PRIVATE, PUBLIC } from "./routes";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { Home } from "../private/pages";
+import { Graficos } from "../private/pages/Graficos";
 import Unauthorized from "../private/components/Unauthorized";
 import { LayoutPrivate } from "../private/layout/LayoutPrivate";
 import { Usuarios } from "../private/pages/Usuarios";
@@ -18,17 +18,22 @@ import { Certificado } from "../private/pages/Certificado";
 import { Libro } from "../private/pages/Libro";
 import { Libro6 } from "../private/components/Libro6";
 import { Libro5 } from "../private/components/Libro5";
+import { Correo } from "../private/pages/Correo";
+// import Graficos from "../private/pages/Graficos";
 
 export const PrivateRoutes = () => {
   return (
-    // <DoctorProvider>
     <Routes>
       <Route element={<LayoutPrivate />}>
-        <Route path="/" element={<Navigate to={PRIVATE.HOME} />} />
-        <Route path={`${PRIVATE.HOME}`} element={<Home />} />
+        <Route path="/" element={<Navigate to={PRIVATE.USUARIOS} />} />
 
+    
         <Route element={<RequireAuth roles={[1, 2]} />}>
           <Route path={`${PRIVATE.USUARIOS}`} element={<Usuarios />} />
+        </Route>
+
+        <Route element={<RequireAuth roles={[1, 2]} />}>
+          <Route path={`${PRIVATE.HOME}`} element={<Graficos />} />
         </Route>
 
         <Route element={<RequireAuth roles={[1, 2]} />}>
@@ -70,9 +75,13 @@ export const PrivateRoutes = () => {
         </Route>
 
         <Route element={<RequireAuth roles={[1, 2]} />}>
+          <Route path={`${PRIVATE.CORREO}`} element={<Correo />} />
+        </Route>
+
+        <Route element={<RequireAuth roles={[1, 2]} />}>
           <Route path={`${PRIVATE.LIBROS}`} element={<Libro />}>
-            <Route path={`${PRIVATE.LIBRO_6}`} element={<Libro6/>} /> 
-            <Route path={`${PRIVATE.LIBRO_5}`} element={<Libro5/>} /> 
+            <Route path={`${PRIVATE.LIBRO_6}`} element={<Libro6 />} />
+            <Route path={`${PRIVATE.LIBRO_5}`} element={<Libro5 />} />
           </Route>
         </Route>
       </Route>
