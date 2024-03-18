@@ -86,8 +86,6 @@ const get_nuevos_convalidados = async (req = request, res) => {
 const graficos_por_defecto = async (req = request, res) => {
   const { cod_esp } = req.body;
 
-  console.log(req.usuario?.idrol);
-
   let filtro = "";
   if (cod_esp != undefined && cod_esp != null) {
     filtro = `WHERE cod_esp = '${cod_esp}'`;
@@ -130,8 +128,6 @@ const graficos_por_defecto = async (req = request, res) => {
 const get_graficos_con_filtro = async (req = request, res) => {
   const { cod_esp } = req.body;
 
-  console.log(req.usuario?.idrol);
-
   let filtro = "";
   if (cod_esp != undefined && cod_esp != null) {
     filtro = `WHERE cod_esp = '${cod_esp}'`;
@@ -171,6 +167,33 @@ const get_graficos_con_filtro = async (req = request, res) => {
   });
 };
 
+const data_reporte_academico = async (req = request, res) => {
+  const { idrol } = req.usuario;
+  const { periodo } = req.body;
+
+  try {
+
+    let query_programa_academico = `SELECT carrera, m_actual, m_ambos, ROUND((m_ambos / m_actual) * 100, 2) 
+    AS est_ma, cachimbos + traslados AS nuevos_total, cachimbos, ROUND((cachimbos / m_actual) * 100, 2) 
+    AS est_c , traslados, ROUND((traslados / m_actual) * 100, 2) AS est_t, recuperos, est_r, egresados, est_e, desertores, est_d 
+    FROM reporte_uma where periodo = '${periodo}'`;
+
+    // let query_programa_academico = `SELECT carrera, m_actual, m_ambos, ROUND((m_ambos / m_actual) * 100, 2) AS est_ma, cachimbos + traslados AS nuevos_total, cachimbos, ROUND((cachimbos / m_actual) * 100, 2) AS est_c , traslados, ROUND((traslados / m_actual) * 100, 2) AS est_t, recuperos, est_r, egresados, est_e, desertores, est_d FROM reporte_uma WHERE ( (${idrol} = 1 AND reporte_uma.cod_esp IN ('E1','E2','E3','E4','S1', 'S2','S3','S4', 'MS', 'EC','ED','EQ','EI','ES')) OR (${idrol} = 2 AND reporte_uma.cod_esp IN ('E1','E2','E3','E4','S1', 'S2','S3','S4', 'MS', 'EC','ED','EQ','EI','ES')) OR (${idrol} = 4 AND reporte_uma.cod_esp IN ('E1','E2','E3','E4')) OR (${idrol} = 5 AND reporte_uma.cod_esp IN ('S1', 'S2','S3','S4')) OR (${idrol} = 6 AND reporte_uma.cod_esp IN ('MS')) OR (${idrol} = 7 AND reporte_uma.cod_esp IN ('E1','E4')) OR (${idrol} = 8 AND reporte_uma.cod_esp IN ('E2')) OR (${idrol} = 9 AND reporte_uma.cod_esp IN ('E3')) OR (${idrol} = 10 AND reporte_uma.cod_esp IN ('S1')) OR (${idrol} = 11 AND reporte_uma.cod_esp IN ('S2')) OR (${idrol} = 12 AND reporte_uma.cod_esp IN ('S3')) OR (${idrol} = 13 AND reporte_uma.cod_esp IN ('S4')) OR (${idrol} = 14 AND reporte_uma.cod_esp IN ('E1','E2','E3','E4','S1', 'S2','S3','S4', 'MS', 'EC','ED','EQ','EI','ES')) OR (${idrol} = 15 AND reporte_uma.cod_esp IN ('S1','EC','ED','EQ','EI','ES'))  AND periodo = '20241')`;
+
+    let data_programa_academico = await connection.query(
+      query_programa_academico,
+      {
+        type: QueryTypes.SELECT,
+        raw: false,
+      }
+    );
+    return res.status(200).json(data_programa_academico);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Error en el sevidor!" });
+  }
+};
+
 export {
   estudiantesMatriculados,
   get_convalidantes,
@@ -178,4 +201,5 @@ export {
   get_nuevos_convalidados,
   get_graficos_con_filtro,
   graficos_por_defecto,
+  data_reporte_academico,
 };

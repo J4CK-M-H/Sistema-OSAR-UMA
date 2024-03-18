@@ -4,7 +4,6 @@ import { connection } from "../db/database.js";
 import { QueryTypes } from "sequelize";
 
 const validarToken = async (req = request, res = response, next) => {
-  console.log(req.headers?.authorization);
   if (
     req.headers?.authorization &&
     req.headers?.authorization.startsWith("Bearer")

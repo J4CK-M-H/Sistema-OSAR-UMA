@@ -3,6 +3,7 @@ import { request, response } from "express";
 import { generarJWT } from "../helpers/generar-token.js";
 import { connection } from "../db/database.js";
 import { QueryTypes } from "sequelize";
+import { fecha_ulti_login } from "../helpers/fechas.js";
 
 const session = async (req, res) => {
   return res.status(200).json(req.usuario);
@@ -23,6 +24,23 @@ const login = async (req = request, res = response) => {
   if (validar_usuario.length == 0) {
     return res.status(400).json({ message: "Usuario/Password incorrectos" });
   }
+  
+  if( validar_usuario[0].estado == 0 ){
+    return res.status(401).json({ message: "Usuario deshabilitado!" });
+  }
+
+  await connection.query("SET SQL_SAFE_UPDATES = 0", {
+    type: QueryTypes.UPDATE,
+    raw: false,
+  });
+
+  await connection.query(
+    `UPDATE usuarios SET ultimo_login = '${fecha_ulti_login()}' where usuario = '${username}' AND password = '${password}'`,
+    {
+      type: QueryTypes.UPDATE,
+      raw: false,
+    }
+  );
 
   const token = generarJWT(
     validar_usuario[0].usuario,
@@ -35,7 +53,7 @@ const login = async (req = request, res = response) => {
     usuario: validar_usuario[0].usuario,
     nombre: validar_usuario[0].nombre,
     nombrerol: validar_usuario[0].nombrerol,
-    idrol: validar_usuario[0].idrol
+    idrol: validar_usuario[0].idrol,
   };
 
   let data_user = { ...user, token };

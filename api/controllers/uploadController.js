@@ -17,15 +17,19 @@ const cargar_archivo_csv = async (req = request, res) => {
 };
 
 const cargar_libro_6 = async (req = request, res) => {
+
   if (req.files) {
     let excel = req.files.file;
     let date = Date.now();
     await excel.mv("./uploads/" + `${date}` + excel.name);
     let book = XLSX.readFile("./uploads/" + `${date}` + excel.name);
     let sheet_name_list = book.SheetNames;
-
+    
     // CONVETIRMOS LA DATA EN JSON PARA REGISTRARLO EN LA BD
     let data = XLSX.utils.sheet_to_json(book.Sheets[sheet_name_list[0]]);
+
+    console.log(data)
+    console.log(book.Sheets[sheet_name_list])
 
     let query_ultimo_folio =
       "SELECT numero_folio FROM libro_6 ORDER BY id DESC LIMIT 1";
@@ -33,7 +37,6 @@ const cargar_libro_6 = async (req = request, res) => {
       type: QueryTypes.SELECT,
       raw: false,
     });
-
     let numero_folio_lleno = 0;
     let numero_folio_vacio = 0;
 
