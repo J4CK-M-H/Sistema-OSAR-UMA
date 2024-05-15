@@ -272,44 +272,52 @@ export const ListaAdmision = () => {
                   field="id"
                   header="#"
                   body={templateId}
-                  headerClassName="bg-rose-700 text-white"
+                  className="border-rose-300"
+                  headerClassName="bg-rose-700 text-white border-none"
                 />
                 <Column
                   field="nombres"
+                  className="border-rose-300"
                   header="Nombres"
-                  headerClassName="bg-rose-700 text-white"
+                  headerClassName="bg-rose-700 text-white border-none"
                 />
                 <Column
                   field="apellidos"
+                  className="border-rose-300"
                   header="Apellidos"
-                  headerClassName="bg-rose-700 text-white"
+                  headerClassName="bg-rose-700 text-white border-none"
                 />
                 <Column
                   field="edad"
+                  className="border-rose-300"
                   header="Edad"
-                  headerClassName="bg-rose-700 text-white"
+                  headerClassName="bg-rose-700 text-white border-none"
                 />
                 <Column
                   field="carrera"
+                  className="border-rose-300"
                   header="Carrera"
-                  headerClassName="bg-rose-700 text-white"
+                  headerClassName="bg-rose-700 text-white border-none"
                 />
                 <Column
                   field="telefono"
+                  className="border-rose-300"
                   header="Telefono"
-                  headerClassName="bg-rose-700 text-white"
+                  headerClassName="bg-rose-700 text-white border-none"
                 />
                 <Column
                   field="total_preguntas"
+                  className="border-rose-300"
                   header="Puntaje"
-                  headerClassName="bg-rose-700 text-white"
+                  headerClassName="bg-rose-700 text-white border-none"
                   body={bodyPuntaje}
                 />
                 <Column
                   field="estado"
+                  className="border-rose-300"
                   header="Estado"
                   body={templateBody}
-                  headerClassName="bg-rose-700 text-white"
+                  headerClassName="bg-rose-700 text-white border-none"
                 />
               </DataTable>
             </div>

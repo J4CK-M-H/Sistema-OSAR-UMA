@@ -44,11 +44,6 @@ export const Correo = () => {
     return reader;
   };
 
-  // const onFile = () => {
-  //   base64()
-  //   console.log(valorBase)
-  // };
-
   return (
     <section>
       <div>

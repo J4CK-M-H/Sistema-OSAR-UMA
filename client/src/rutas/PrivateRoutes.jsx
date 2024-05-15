@@ -19,24 +19,31 @@ import { Libro } from "../private/pages/Libro";
 import { Libro6 } from "../private/components/Libro6";
 import { Libro5 } from "../private/components/Libro5";
 import { Correo } from "../private/pages/Correo";
+import ReportTemplate from "../private/pages/ReportTemplate";
+import { FechasIngresoEgreso } from "../private/pages/FechasIngresoEgreso";
+import { Animacion } from "../private/components/Animacion";
 // import Graficos from "../private/pages/Graficos";
 
 export const PrivateRoutes = () => {
   return (
     <Routes>
       <Route element={<LayoutPrivate />}>
-        <Route path="/" element={<Navigate to={PRIVATE.USUARIOS} />} />
+        <Route path="/" element={<Navigate to={PRIVATE.HOME} />} />
 
-    
         <Route element={<RequireAuth roles={[1, 2]} />}>
           <Route path={`${PRIVATE.USUARIOS}`} element={<Usuarios />} />
         </Route>
+
+        <Route
+          path={`${PRIVATE.REPORT_TEMPLATE}`}
+          element={<ReportTemplate />}
+        />
 
         <Route element={<RequireAuth roles={[1, 2]} />}>
           <Route path={`${PRIVATE.HOME}`} element={<Graficos />} />
         </Route>
 
-        <Route element={<RequireAuth roles={[1, 2]} />}>
+        <Route element={<RequireAuth roles={[1, 2, 14]} />}>
           <Route path={`${PRIVATE.REPORTES_UMA}`} element={<ReportesUma />}>
             <Route
               path={`${PRIVATE.REPORTE_ALUMNOS}`}
@@ -49,7 +56,7 @@ export const PrivateRoutes = () => {
           </Route>
         </Route>
 
-        <Route element={<RequireAuth roles={[1, 2]} />}>
+        <Route element={<RequireAuth roles={[1, 2, 16]} />}>
           <Route path={`${PRIVATE.ADMISION}`} element={<Admision />}>
             <Route
               path={`${PRIVATE.ADMISION_CHEKING_LIST}`}
@@ -83,6 +90,17 @@ export const PrivateRoutes = () => {
             <Route path={`${PRIVATE.LIBRO_6}`} element={<Libro6 />} />
             <Route path={`${PRIVATE.LIBRO_5}`} element={<Libro5 />} />
           </Route>
+        </Route>
+
+        <Route element={<RequireAuth roles={[1, 2]} />}>
+          <Route
+            path={`${PRIVATE.FECHAS_INGRESO_EGRESO}`}
+            element={<FechasIngresoEgreso />}
+          />
+        </Route>
+
+        <Route element={<RequireAuth roles={[1, 2]} />}>
+          <Route path={`animacion`} element={<Animacion />} />
         </Route>
       </Route>
 

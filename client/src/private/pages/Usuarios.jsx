@@ -11,6 +11,7 @@ import { MdEdit } from "react-icons/md";
 import { ModalEditUsuario } from "../components/ModalEditUsuario";
 import { Toast } from "primereact/toast";
 import { ToastContainer, toast } from "react-toastify";
+import { SpinnerYinYang } from "../components/SpinnerYinYang";
 
 export const Usuarios = () => {
   // STATES DEL MODAL EDITAR USUARIO
@@ -46,14 +47,12 @@ export const Usuarios = () => {
 
       try {
         let { data } = await useApi("/usuario/get_usuarios", config);
-        console.log(data);
         setUsuarios(data);
       } catch (error) {
         console.log(error);
       } finally {
         setLoading(false);
       }
-      console.log("usuarios");
     };
 
     get_users();
@@ -93,10 +92,7 @@ export const Usuarios = () => {
 
   let header = rendeHeader();
 
-  if (loading) {
-    return "cargando...";
-    // return <Spinner />;
-  }
+  if (loading) return;
 
   const cambiarEstado = async (estado, idusuario) => {
     try {
@@ -185,11 +181,10 @@ export const Usuarios = () => {
       let usuarioActualizado = usuarios.filter(
         (item) => item.idusuario != data
       );
-      console.log(usuarioActualizado);
       setUsuarios(usuarioActualizado);
     } catch (error) {
       console.log(error);
-    }finally{
+    } finally {
       toast_usuario_eliminado();
     }
   };

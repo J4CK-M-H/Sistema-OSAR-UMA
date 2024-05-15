@@ -513,7 +513,7 @@ export const ReportesUmaAlumnos = () => {
                       index == 0 && "bg-rose-700 text-white font-bold"
                     } text-center  ${
                       index == 11 && "border-red-300 font-extrabold"
-                    }`}
+                    } border-slate-400`}
                     key={index}
                     field={col.field}
                     header={col.header}
@@ -546,7 +546,7 @@ export const ReportesUmaAlumnos = () => {
                       index == 0 && "bg-rose-700 text-white font-bold"
                     } text-center ${
                       index == 4 && "border-red-300 font-extrabold"
-                    }`}
+                    } border-slate-400`}
                     key={index}
                     field={col.field}
                     header={col.header}
@@ -579,7 +579,7 @@ export const ReportesUmaAlumnos = () => {
                       index == 0 && "bg-rose-700 text-white font-bold"
                     } text-center ${
                       index == 5 && "border-red-300 font-extrabold"
-                    }`}
+                    } border-slate-400`}
                     key={index}
                     field={col.field}
                     header={col.header}

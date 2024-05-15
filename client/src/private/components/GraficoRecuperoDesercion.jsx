@@ -33,6 +33,19 @@ export const GraficoRecuperoDesercion = ({ periodos, recuperos, crecimientos, de
         enabledOnSeries: undefined,
       },
     },
+    noData: {
+      text: 'No hay registros de la carrera',
+      align: 'center',
+      verticalAlign: 'middle',
+      offsetX: 0,
+      offsetY: 0,
+      style: {
+        color: '#000',
+        fontSize: '20px',
+        fontFamily: undefined,
+        fontWeight: 800
+      }
+    },
     colors: ["#FE0000", "#65B741", "#EE7214"],
     dataLabels: {
       enabled: true,

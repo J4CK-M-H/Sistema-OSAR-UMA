@@ -13,10 +13,13 @@ import { FaListAlt } from "react-icons/fa";
 import { FaChartBar } from "react-icons/fa";
 import { LuBookMarked } from "react-icons/lu";
 import { FiBook } from "react-icons/fi";
+import { FaCalendarMinus } from "react-icons/fa6";
+import { FaRegCalendarCheck } from "react-icons/fa";
+import { PiCertificateDuotone } from "react-icons/pi";
 
 export const Drawer = ({ visible, setVisible }) => {
   const { auth, loadingAuth } = useContext(AuthContext);
-
+  console.log(auth)
   if (loadingAuth) return;
 
   const customHeader = (
@@ -59,7 +62,7 @@ export const Drawer = ({ visible, setVisible }) => {
     return (
       <>
         <div className="-my-2 flex items-center">
-          <LuBookMarked className="mr-4" size={25}/>
+          <LuBookMarked className="mr-4" size={25} />
           <span className="block mr-2 font-semibold text-slate-600">
             Libros
           </span>
@@ -88,7 +91,7 @@ export const Drawer = ({ visible, setVisible }) => {
           <span className="font-semibold text-slate-600">Home</span>
         </Link>
         <Divider />
-        {(auth?.idusuario == 1 || auth?.idusuario == 2) && (
+        {(auth?.idrol == 1 || auth?.idrol == 2) && (
           // ((auth?.nombrerol).toUpperCase() == 'DEVELOPER' || 'ADMINISTRADOR' ) && (
 
           <Link
@@ -101,7 +104,7 @@ export const Drawer = ({ visible, setVisible }) => {
           </Link>
         )}
         <Divider />
-        {(auth?.idusuario == 1 || auth?.idusuario == 2) && (
+        {(auth?.idrol == 1 || auth?.idrol == 2 || auth?.idrol == 14) && (
           // ((auth?.nombrerol).toUpperCase() == 'DEVELOPER' || 'ADMINISTRADOR' ) && (
 
           <Accordion className="">
@@ -132,9 +135,8 @@ export const Drawer = ({ visible, setVisible }) => {
             </AccordionTab>
           </Accordion>
         )}
-        {(auth?.idusuario == 1 || auth?.idusuario == 2) && (
+        {(auth?.idrol == 1 || auth?.idrol == 2 || auth?.idrol == 16) && (
           // ((auth?.nombrerol).toUpperCase() == 'DEVELOPER' || 'ADMINISTRADOR' ) && (
-
           <Accordion className="bg-white">
             <AccordionTab
               className="bg-white "
@@ -189,19 +191,19 @@ export const Drawer = ({ visible, setVisible }) => {
             </AccordionTab>
           </Accordion>
         )}
-        {(auth?.idusuario == 1 || auth?.idusuario == 2) && (
+        {(auth?.idrol == 1 || auth?.idrol == 2) && (
           // ((auth?.nombrerol).toUpperCase() == 'DEVELOPER' || 'ADMINISTRADOR' ) && (
 
           <Link
             onClick={() => setVisible(false)}
             to={`${PRIVATE.CERTIFICADO}`}
-            className="py-3 px-6 flex items-center gap-x-4 border-white hover:bg-slate-100 border-l-8 hover:border-rose-700"
+            className="py-3 px-4 flex items-center gap-x-4 border-white hover:bg-slate-100 border-l-8 hover:border-rose-700"
           >
-            <FaUsers size={25} />
+            <PiCertificateDuotone size={30}/>
             <span className="font-semibold">Certificado</span>
           </Link>
         )}
-        {(auth?.idusuario == 1 || auth?.idusuario == 2) && (
+        {(auth?.idrol == 1 || auth?.idrol == 2) && (
           // ((auth?.nombrerol).toUpperCase() == 'DEVELOPER' || 'ADMINISTRADOR' ) && (
 
           <Accordion className="">
@@ -213,9 +215,7 @@ export const Drawer = ({ visible, setVisible }) => {
                   className="flex items-center gap-x-4 hover:bg-slate-100 py-2 pl-10"
                 >
                   <FiBook size={20} />
-                  <span className="font-semibold py-2 text-sm">
-                    Libro 6
-                  </span>
+                  <span className="font-semibold py-2 text-sm">Libro 6</span>
                 </Link>
                 <Divider />
                 <Link
@@ -224,13 +224,21 @@ export const Drawer = ({ visible, setVisible }) => {
                   className="flex items-center gap-x-4 hover:bg-slate-100 py-2 pl-10"
                 >
                   <FiBook size={20} />
-                  <span className="font-semibold py-2 text-sm">
-                    Libro 5
-                  </span>
+                  <span className="font-semibold py-2 text-sm">Libro 5</span>
                 </Link>
               </div>
             </AccordionTab>
           </Accordion>
+        )}
+        {(auth?.idrol == 1 || auth?.idrol == 2) && (
+          <Link
+            onClick={() => setVisible(false)}
+            to={`${PRIVATE.FECHAS_INGRESO_EGRESO}`}
+            className="py-3 px-4 flex items-center gap-x-4 border-white hover:bg-slate-100 border-l-8 hover:border-rose-700"
+          >
+            <FaRegCalendarCheck size={25} />
+            <span className="font-semibold ">Fechas Ingreso y Egreso</span>
+          </Link>
         )}
       </div>
     </Sidebar>

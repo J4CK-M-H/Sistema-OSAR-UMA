@@ -53,10 +53,11 @@ export const GraficoEstadisticasTotales = ({ periodos, matriculados, egresados, 
       },
     },
     grid: {
-      borderColor: "#90A4AE",
-      strokeDashArray: 0.4,
+      borderColor: "#767070",
+      strokeDashArray: 1,
       xaxis: {
         lines: {
+          borderColor: "red",
           show: true,
         },
       },

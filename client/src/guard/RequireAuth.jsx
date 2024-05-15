@@ -8,8 +8,6 @@ export const RequireAuth = ({ roles }) => {
   let { auth, loadingAuth } = useContext(AuthContext);
   
   let token = JSON.parse(localStorage.getItem("user"))
-  console.log(token)
-
 
   return (
     roles.includes( (auth?.idrol) )

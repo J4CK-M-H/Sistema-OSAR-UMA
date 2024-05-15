@@ -5,11 +5,13 @@ import React, { useEffect, useState } from "react";
 import { useApi } from "../../hooks/useAxios";
 import { Dialog } from "primereact/dialog";
 import { AutoComplete } from "primereact/autocomplete";
-import { Divider } from "primereact/divider";
 import { TbListLetters } from "react-icons/tb";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { ToastContainer, toast } from "react-toastify";
+import { FilterMatchMode } from "primereact/api";
+import { FaFilter } from "react-icons/fa";
+import { TrophySpin } from "react-loading-indicators";
 
 export const Libro5 = () => {
   const [visible, setVisible] = useState(false);
@@ -24,16 +26,63 @@ export const Libro5 = () => {
 
   const [alumnosFormateados, setAlumnosFormateados] = useState([]);
 
+  const [fieldSearch, setFieldSearch] = useState("");
+  const [loaderResponse, setLoaderResponse] = useState(false);
+  const [responseFilter, setResponseFilter] = useState([]);
+
   const [fechaEmision, setFechaEmision] = useState(
     new Date().toLocaleDateString()
   );
+
+  const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  });
 
   useEffect(() => {
     obtener_datos_libro_5();
     data_alumnos();
   }, []);
 
-  const toast_usuario_agregado = () => toast.success("Registro agregado!");
+  const search_data = async (event) => {
+    setLoaderResponse(true);
+    setFieldSearch(event.target.value);
+
+    if (event.target.value.length == 0) {
+      setResponseFilter([]);
+      setLoaderResponse(false);
+      return;
+    }
+
+    try {
+      setTimeout(async () => {
+        let { data } = await useApi.post(`/libro/filter_user_libro_5`, {
+          filtro: event.target.value.toUpperCase(),
+        });
+        setResponseFilter(data);
+        setLoaderResponse(false);
+      }, 1500);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setTimeout(() => {
+        setLoaderResponse(false);
+      }, 1500);
+    }
+  };
+
+  const toast_success = (message = "Acción completada!") =>
+    toast.success(message);
+
+  const onGlobalFilterChange = (e) => {
+    const value = e.target.value;
+    let _filters = { ...filters };
+
+    _filters["global"].value = value;
+
+    setFilters(_filters);
+    setGlobalFilterValue(value);
+  };
 
   const itemTemplate = (item) => {
     return (
@@ -55,7 +104,9 @@ export const Libro5 = () => {
 
   const rellenar_estudiante = async () => {
     // console.log(alumnoeSelected.nombres)
-    if (filtrarAlumno.trim() == "") return alert("ESCRIBA UNA COINCIDENCIA");
+    // setFiltrarAlumno([]);
+    if (!alumnoeSelected.nombres) return alert("ESCRIBA UNA COINCIDENCIA");
+    // if (filtrarAlumno.length == 0) return alert("ESCRIBA UNA COINCIDENCIA");
 
     let codigo = alumnoeSelected.nombres.split("|")[0].trim();
     let nombres = alumnoeSelected.nombres.split("|")[1].trim().split(" ");
@@ -129,6 +180,32 @@ export const Libro5 = () => {
     }, 1000);
   };
 
+  const autocomplete = () => {};
+
+  const rendeHeader = () => {
+    return (
+      <div className="flex justify-between items-center">
+        <button
+          className="bg-green-600 text-white rounded-sm py-2 px-4"
+          onClick={() => setVisible(true)}
+        >
+          Agregar
+        </button>
+        <div className="p-inputgroup w-[250px]">
+          <span className="p-inputgroup-addon">
+            <FaFilter />
+          </span>
+          <InputText
+            type="search"
+            value={globalFilterValue}
+            onChange={onGlobalFilterChange}
+            placeholder="Filtro global"
+          />
+        </div>
+      </div>
+    );
+  };
+
   const obtener_datos_libro_5 = async () => {
     const token = await JSON.parse(localStorage.getItem("user"));
     let config = {
@@ -139,15 +216,16 @@ export const Libro5 = () => {
     };
 
     try {
-      let { data } = await useApi("libro/data_libro_5",config);
+      let { data } = await useApi("libro/data_libro_5", config);
       setLibros(data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const data_alumnos = async () => {
+  let header = rendeHeader();
 
+  const data_alumnos = async () => {
     const token = await JSON.parse(localStorage.getItem("user"));
     let config = {
       headers: {
@@ -179,7 +257,7 @@ export const Libro5 = () => {
         observacionModal.trim(),
         periodoEgresoModal.trim(),
         fechaEmision.trim(),
-      ]
+      ].some((field) => field == "")
     ) {
       alert("RELLENE TODOS LOS CAMPOS PROFAVOR!");
       return;
@@ -194,7 +272,7 @@ export const Libro5 = () => {
         carrera: carreraModal,
       });
       cleanModal();
-      toast_usuario_agregado();
+      toast_success("Registro agregado!");
     } catch (error) {
       console.log(error);
     } finally {
@@ -202,20 +280,30 @@ export const Libro5 = () => {
     }
   };
 
+  const setItemOnFields = (alumno) => {
+    setNombresModal(`${alumno.paterno} ${alumno.materno}, ${alumno.nombres}`);
+    setCarreraModal(`${alumno.nomesp}`);
+    setPeriodoEgresoModal("");
+  };
+
+  const cleanInputSearch = () => {
+    setFieldSearch("");
+    setResponseFilter([]);
+    setLoaderResponse(false);
+  };
+
   return (
     <div className="space-y-4">
       <h2 className="text-3xl font-medium">Libro 5</h2>
-      <button
-        className="bg-green-600 text-white rounded-sm py-2 px-4"
-        onClick={() => setVisible(true)}
-      >
-        Agregar
-      </button>
+
       <Card>
         <DataTable
           value={libros}
           showGridlines
           rows={5}
+          filters={filters}
+          globalFilterFields={["nombres", "carrera", "numero_correlativo"]}
+          header={header}
           paginator
           cellClassName="font-semibold"
         >
@@ -266,13 +354,166 @@ export const Libro5 = () => {
         header="FORMULARIO DE REGISTRO - LIBRO 5"
         visible={visible}
         onHide={() => setVisible(false)}
-        className="w-[700px]"
+        className="w-[90%] h-[90%]"
       >
+        <div className="flex gap-x-4 mt-2">
+          <InputText
+            value={fieldSearch}
+            onChange={search_data}
+            placeholder="Busqueda del alumno"
+            className="flex-1"
+          />
+          <div className="flex-2 flex gap-x-2">
+            <button className="py-2 px-10 rounded-sm bg-blue-600 text-white">
+              Rellenar
+            </button>
+            <button
+              onClick={cleanInputSearch}
+              className="py-2 px-10 rounded-sm bg-red-600 text-white"
+            >
+              Limpiar
+            </button>
+          </div>
+        </div>
+        <div className="flex h-[400px] mt-4 gap-x-4">
+          <section className="flex-1 p-2 flex flex-col gap-y-2">
+            <h2 className="text-xl font-semibold">Resultados:</h2>
+            {loaderResponse ? (
+              <section className="h-full flex justify-center items-center flex-col">
+                <h2 className="text-xl font-semibold">Cargando...</h2>
+                <TrophySpin
+                  color="#32cd32"
+                  size="large"
+                  className="block mx-auto mt-[50px]"
+                />
+              </section>
+            ) : responseFilter.length > 0 ? (
+              responseFilter.map((item, index) => (
+                <section
+                  className="cursor-pointer"
+                  key={index}
+                  onClick={() => setItemOnFields(item)}
+                >
+                  <div className="bg-white py-1 px-3 flex gap-x-3 border border-slate-400  rounded-md items-center h-[65px] min-h-[40px]">
+                    <span className="text-xs w-[118px]">
+                      <strong>CODIGO</strong>: {item.codigo}
+                    </span>
+                    <span className="w-[1px] inline-block h-[90%] bg-slate-400"></span>
+                    <span className="text-xs flex-1">
+                      <strong>ALUMNO</strong>:{" "}
+                      {`${item.paterno} ${item.materno}, ${item.nombres}`}
+                    </span>
+                    <span className="w-[1px] inline-block h-[90%] bg-slate-400"></span>
+                    <span className="text-xs flex-1">
+                      <strong className="">CARRERA</strong>:
+                      <span className="text-xs">{item.nomesp}</span>
+                    </span>
+                  </div>
+                </section>
+              ))
+            ) : (
+              <h2 className="font-semibold">No hay resultados encontrados</h2>
+            )}
+          </section>
+          <div className="flex-1 flex flex-col justify-center">
+            <div className="space-y-4">
+              <div className="flex gap-x-6">
+                <div className="flex-1">
+                  <label htmlFor="turno" className="font-semibold d-block">
+                    Alumno
+                  </label>
+                  <div className="p-inputgroup flex-1">
+                    <InputText
+                      value={nombresModal}
+                      onChange={(event) => setNombresModal(event.target.value)}
+                      placeholder="Nombre"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex-1">
+                  <label htmlFor="turno" className="font-semibold d-block">
+                    Carrera
+                  </label>
+                  <div className="p-inputgroup flex-1">
+                    <InputText
+                      value={carreraModal}
+                      onChange={(event) => setCarreraModal(event.target.value)}
+                      placeholder="Carrera"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-x-6">
+                <div className="flex-1">
+                  <label htmlFor="turno" className="font-semibold d-block">
+                    Periodo de egreso
+                  </label>
+                  <div className="p-inputgroup flex-1">
+                    <InputText
+                      value={periodoEgresoModal}
+                      onChange={(event) =>
+                        setPeriodoEgresoModal(event.target.value)
+                      }
+                      placeholder="periodo egreso"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex-1">
+                  <label htmlFor="turno" className="font-semibold d-block">
+                    Fecha de Emisión
+                  </label>
+                  <div className="p-inputgroup flex-1">
+                    <InputText
+                      value={fechaEmision}
+                      onChange={(event) => setFechaEmision(event.target.value)}
+                      placeholder="Fecha Emisión"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-inputgroup flex-1 flex flex-col">
+                <label htmlFor="turno" className="font-semibold d-block">
+                  Observación
+                </label>
+                <InputTextarea
+                  value={observacionModal}
+                  className="w-full resize-none"
+                  onChange={(event) => setObservacionModal(event.target.value)}
+                  placeholder="Observación"
+                />
+              </div>
+
+              <div>
+                <button
+                  onClick={registrarAlumnoLibro5}
+                  className="text-white bg-green-700 rounded-sm py-2 px-4 w-full"
+                >
+                  Registrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Dialog>
+      {/* <Dialog
+        header="FORMULARIO DE REGISTRO - LIBRO 5"
+        visible={visible}
+        onHide={() => setVisible(false)}
+        className="w-[700px]"
+        >
         <div className="space-y-4 py-5">
           <div className="flex flex-col w-full">
             <label htmlFor="turno" className="font-semibold d-block">
               Filtro
             </label>
+            <InputText
+              value={fieldSearch}
+              onChange={(event) => search_data(event)}
+              placeholder="Busqueda del alumno"
+            />
             <AutoComplete
               field="nombres"
               value={alumnoeSelected}
@@ -381,7 +622,7 @@ export const Libro5 = () => {
             </button>
           </div>
         </div>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 };

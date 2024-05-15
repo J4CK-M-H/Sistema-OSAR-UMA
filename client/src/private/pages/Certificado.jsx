@@ -1,155 +1,209 @@
-import React, { useState } from "react";
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
-import fontkit from "@pdf-lib/fontkit";
-import { jsPDF } from "jspdf";
-import { PDFDownloadLink, StyleSheet } from "@react-pdf/renderer";
-import { PDF } from "./PDF";
-
+import React, { useRef, useState } from "react";
+import jsPDF from "jspdf";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
+import ReportTemplate from "./ReportTemplate";
+import { BackTemplate } from "./BackTemplate";
+// import ReportTemplate from "./ReportTemplate";
 
 export const Certificado = () => {
-  const [srcState, setSrcState] = useState(null);
-  const [estudiante, setEstudiante] = useState("");
-  const [descripcion, setDescripcion] = useState("");
+  const reportTemplateRef = useRef(null);
+  const backTemplateRef = useRef(null);
 
-  const generarPdf = async (estudiante) => {
-    const exBytes = await fetch("/Plantilla.pdf").then((response) =>
-      response.arrayBuffer()
-    );
+  const [nombre, setNombre] = useState("");
+  const [numeroFolio, setNumeroFolio] = useState("");
+  const [directoreEscuela, setDirectoreEscuela] = useState("");
+  const [numeroLibro, setNumeroLibro] = useState("");
+  const [participacionCertificado, setParticipacionCertificado] = useState("");
+  const [tallerCertificado, setTallerCertificado] = useState("");
+  const [fechaCursadaCertificado, setFechaCursadaCertificado] = useState("");
+  const [fechaEmisionCertificado, setFechaEmisionCertificado] = useState("");
+  const [creditosCertificado, setCreditosCertificado] = useState("");
+  const [escuelaOrganizadaCertificado, setEscuelaOrganizadaCertificado] =
+    useState("");
 
-    const fontBytesCursive = await fetch("/fonts/02255_ANTQUAI.ttf").then(
-      (res) => res.arrayBuffer()
-    );
-    const fontBytes = await fetch("/fonts/Book-Antiqua.ttf").then((res) =>
-      res.arrayBuffer()
-    );
+  const componentRef = useRef();
+  const componenBacktRef = useRef();
 
-    const pdfDoc = await PDFDocument.load(exBytes);
-    pdfDoc.registerFontkit(fontkit);
-    const customFont = await pdfDoc.embedFont(fontBytes);
-    const customFontCurisve = await pdfDoc.embedFont(fontBytesCursive);
-    // console.log(customFont);
+  const [showPrints, setShowPrints] = useState(false);
 
-    // const textSize = 35;
-    const pages = pdfDoc.getPages();
-    const firstPg = pages[0];
-    const secondPg = pages[1];
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
-    firstPg.drawText(estudiante, {
-      x: 300,
-      y: 370,
-      size: 24,
-      font: customFontCurisve,
-      // color: rgb(1, 1, 1),
+  const handleBackPrint = useReactToPrint({
+    content: () => componenBacktRef.current,
+  });
+
+  const handleGeneratePdf = async () => {
+    const doc = new jsPDF({
+      format: "a4",
+      // format: "letter",
+      unit: "px",
+      orientation: "landscape",
     });
+    doc.addFileToVFS("/fonts/Book-Antiqua.ttf", "/fonts/Book-Antiqua.bin");
+    doc.addFont("Book-Antiqua.ttf", "antiqua", "normal");
 
-    let corte = Math.floor(descripcion.length / 4);
-    console.log(descripcion.trim().length);
-    let primera_fila = descripcion.slice(0, 80);
-
-    let segunda_fila = descripcion.slice(77, 77 * 2);
-    let tercera_fila = descripcion.slice(corte * 2 + 2, corte * 3 + 2);
-    let cuarta_fila = descripcion.slice(230, 500);
-    let texto_completo = `${primera_fila}\n${segunda_fila}\n${tercera_fila}\n${cuarta_fila}`;
-    console.log(texto_completo);
-
-    let textSize = 13.3;
-    const textWidth = customFont.widthOfTextAtSize(primera_fila, textSize);
-
-    firstPg.drawText(texto_completo, {
-      x: 260,
-      y: 330,
-      width: 500,
-      size: textSize,
-
-      font: customFont,
-      color: rgb(0, 0, 0),
+    doc.setFont("antiqua", "normal");
+    console.log(doc.getFontList());
+    // Adding the fonts.
+    doc.setFontSize(50);
+    doc.html(reportTemplateRef.current, {
+      async callback(doc) {
+        await doc.save("document");
+      },
     });
-
-    // firstPg.drawText(segunda_fila, {
-    //   x:260,
-    //   y: 300,
-    //   size: 13.3,
-    //   font: customFont,
-    //   color: rgb(0,0,0)
-    // });
-
-    // firstPg.drawText(tercera_fila, {
-    //   x:260,
-    //   y: 270,
-    //   size: 13.3,
-    //   font: customFont,
-    //   color: rgb(0,0,0)
-    // });
-
-    const uri = await pdfDoc.saveAsBase64({ dataUri: true });
-    setSrcState(uri);
   };
 
-  const generarJspdf = async () => {
-    var img = new Image();
-    img.src = "/jiji.jpg";
-    var doc = new jsPDF("l", "mm", "a3"); // optional parameters
-    const myFont = await fetch("/fonts/02255_ANTQUAI.ttf").then((res) =>
-      res.arrayBuffer()
-    );
-    doc.addFileToVFS("/fonts/02255_ANTQUAI.ttf", myFont);
-    doc.addFont("/fonts/02255_ANTQUAI.ttf", "MyFont", "normal");
-    doc.setFont("MyFont");
-
-    doc.setFont("", "bold");
-    doc.text("Hello world!", 10, 10);
-    doc.addImage(img, "JPEG", 100, 2);
-    doc.save("new.pdf");
-  };
-
-  
+  console.log()
 
   return (
     <div>
-      <h2 className="text-2xl font-black">Certificado</h2>
-      <div className="flex gap-x-4">
-        <button
-          onClick={() => setSrcState(null)}
-          className="py-2 px-4 text-white bg-yellow-600 rounded-sm"
-        >
-          Resetear
-        </button>
-        <button
-          onClick={() => generarPdf(estudiante)}
-          className="py-2 px-4 text-white bg-green-600 rounded-sm"
-        >
-          Generar certificado
-        </button>
-
+      <div className="py-2 flex gap-x-4 flex-wrap">
         <div>
-          <PDFDownloadLink document={<PDF nombre={estudiante.toLocaleUpperCase()} />} fileName="pdfprueba.pdf">
-            {({ loading, url, error, blolb }) =>
-              loading ? <button>Loading...</button> : <button>is loaded</button>
+          <label htmlFor="" className="block">
+            Otorgado a:
+          </label>
+          <input
+            type="text"
+            className="border border-slate-400 py-2 px-3 rounded-sm w-[300px] outline-none"
+            value={nombre}
+            onChange={(event) => setNombre(event.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="" className="block">
+            Participación:
+          </label>
+          <input
+            type="text"
+            className="border border-slate-400 py-2 px-3 rounded-sm w-[300px] outline-none"
+            value={participacionCertificado}
+            onChange={(event) =>
+              setParticipacionCertificado(event.target.value)
             }
-          </PDFDownloadLink>
+          />
+        </div>
+        <div>
+          <label htmlFor="" className="block">
+            Taller:
+          </label>
+          <input
+            type="text"
+            className="border border-slate-400 py-2 px-3 rounded-sm w-[300px] outline-none"
+            value={tallerCertificado}
+            onChange={(event) => setTallerCertificado(event.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="" className="block">
+            Fecha cursada:
+          </label>
+          <input
+            type="text"
+            className="border border-slate-400 py-2 px-3 rounded-sm w-[300px] outline-none"
+            value={fechaCursadaCertificado}
+            onChange={(event) => setFechaCursadaCertificado(event.target.value)}
+          />
+        </div>
+        {/* <div>
+          <label htmlFor="" className="block">
+            Fecha emisión:
+          </label>
+          <input
+            type="text"
+            className="border border-slate-400 py-2 px-3 rounded-sm w-[300px] outline-none"
+            value={fechaEmisionCertificado}
+            onChange={(event) => setFechaEmisionCertificado(event.target.value)}
+          />
+        </div> */}
+        <div>
+          <label htmlFor="" className="block">
+            Numero Libro:
+          </label>
+          <input
+            type="text"
+            className="border border-slate-400 py-2 px-3 rounded-sm w-[300px] outline-none"
+            value={numeroLibro}
+            onChange={(event) => setNumeroLibro(event.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="" className="block">
+            Numero Folio:
+          </label>
+          <input
+            type="text"
+            className="border border-slate-400 py-2 px-3 rounded-sm w-[300px] outline-none"
+            value={numeroFolio}
+            onChange={(event) => setNumeroFolio(event.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="" className="block">
+            Director@ de escuela:
+          </label>
+          <input
+            type="text"
+            className="border border-slate-400 py-2 px-3 rounded-sm w-[300px] outline-none"
+            value={directoreEscuela}
+            onChange={(event) => setDirectoreEscuela(event.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="" className="block">
+            Escuela Organizadora:
+          </label>
+          <input
+            type="text"
+            className="border border-slate-400 py-2 px-3 rounded-sm w-[300px] outline-none"
+            value={escuelaOrganizadaCertificado}
+            onChange={(event) => setEscuelaOrganizadaCertificado(event.target.value)}
+          />
         </div>
       </div>
+      <div>
+        <button
+          onClick={() => setShowPrints(!showPrints)}
+          className="bg-blue-600 text-white py-2 px-4 rounded-sm"
+        >
+          {showPrints ? "Ocultar Componentes" : "Habilitar Componente"}
+        </button>
+        <button
+          onClick={handlePrint}
+          className="bg-red-600 text-white py-2 px-4 rounded-sm"
+        >
+          Imprimir el componente
+        </button>
+      </div>
 
-      <input
-        type="text"
-        value={estudiante}
-        onChange={(event) => setEstudiante(event.target.value)}
-        className="block py-2 px-4 my-4 w-[300px] outline-none border border-slate-200"
-      />
+      <div ref={componentRef}>
+        {showPrints && (
+          <>
+            <ReportTemplate
+              nombre={nombre}
+              participacionCertificado={participacionCertificado}
+              fechaCursadaCertificado={fechaCursadaCertificado}
+              fechaEmisionCertificado={fechaEmisionCertificado}
+              escuelaOrganizadaCertificado={escuelaOrganizadaCertificado}
+              creditosCertificado={creditosCertificado}
+              tallerCertificado={tallerCertificado}
+              directoreEscuela={directoreEscuela}
+            />
+            <BackTemplate numeroLibro={numeroLibro} numeroFolio={numeroFolio}/>
+          </>
+        )}
+      </div>
 
-      <textarea
-        className="text-justify font-bold"
-        cols="60"
-        rows="5"
-        value={descripcion}
-        onChange={(event) => setDescripcion(event.target.value)}
-      ></textarea>
+      {/* <div ref={componenBacktRef}></div> */}
+      {/* <button onClick={handleBackPrint} className="bg-red-600 text-white py-2 px-4 rounded-sm">Imprimir parte trasera</button> */}
 
-      <iframe
-        src={srcState}
-        frameBorder="0"
-        className="w-full h-[600px]"
-      ></iframe>
+      {/* <button
+        className="bg-red-600 text-white py-2 px-4 rounded-sm"
+        onClick={handleGeneratePdf}
+      >
+        Generate PDF
+      </button> */}
     </div>
   );
 };

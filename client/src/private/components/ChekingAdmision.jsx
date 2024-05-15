@@ -625,6 +625,7 @@ export const ChekingAdmision = () => {
                 filters={filters}
                 paginator
                 rows={4}
+                paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                 rowsPerPageOptions={[5, 10]}
                 value={noValidados}
                 showGridlines
@@ -656,7 +657,7 @@ export const ChekingAdmision = () => {
                 />
                 <Column
                   className={` text-center`}
-                  field={"abrev"}
+                  field={"codesp"}
                   header={"Carrera"}
                   headerClassName="bg-rose-700 text-white text-xs text-center"
                 />
@@ -1068,6 +1069,7 @@ export const ChekingAdmision = () => {
                     onGlobalFilterChangeNoValidado
                   )
                 }
+                paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                 filters={filtersNoValidados}
                 paginator
                 rows={4}
@@ -1097,13 +1099,12 @@ export const ChekingAdmision = () => {
                   className={` text-center`}
                   field={"ch_nombres"}
                   header={"Nombres"}
-                  // header={col.header}
                   headerClassName="bg-rose-700 text-white text-xs text-center"
                   // body={dynamicBody}
                 />
                 <Column
-                  className={` text-center`}
-                  field={"abrev"}
+                  className={`text-center`}
+                  field={"codesp"}
                   header={"Carrera"}
                   headerClassName="bg-rose-700 text-white text-xs text-center"
                 />

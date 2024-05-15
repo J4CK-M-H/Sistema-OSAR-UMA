@@ -7,6 +7,63 @@ import { Toast } from "primereact/toast";
 import { FaSearchengin } from "react-icons/fa6";
 import { useApi } from "../../hooks/useAxios";
 import AuthContext from "../../context/AuthContext";
+import { ReporteProgramaAcademico } from "../components/ReporteProgramaAcademico";
+
+const carrera_por_rol = (id) => {
+  if (id == 1 || id == 2) {
+    return [
+      { name: "TODAS LAS CARRERAS", code: "" },
+      { name: "ADMINISTRACION DE NEGOCIOS INTERNACIONALES", code: "E1" },
+      { name: "ADMINISTRACION Y MARKETING", code: "E2" },
+      { name: "CONTABILIDAD Y FINANZAS", code: "E3" },
+      { name: "ADMINISTRACION Y NEGOCIOS INTERNACIONALES", code: "E4" },
+      { name: "INGENIERÍA INDUSTRIAL", code: "E5" },
+      {
+        name: "DIPLOMADO INTERNACIONAL DE ESPECILIZACIÓN TOXICOLOGÍCA AMBIENTAL Y SEGURIDAD",
+        code: "DT",
+      },
+      { name: "MAESTRIA EN SALUDAD PÚBLICA", code: "MS" },
+      {
+        name: "SEG. ESP. PROF. EN ENFERMERÍA EN CUIDADO INTEGRAL INFANTIL CON MENCIÓN EN CRECIMIENTO Y DESARROLLO",
+        code: "EC",
+      },
+      { name: "SEG. ESP. PROF. EN EMERGENCIAS Y DESASTRES", code: "ED" },
+      {
+        name: "SEG. ESP. PROF. EN ENFERMERÍA EN CUIDADOS INTENSIVOS",
+        code: "EI",
+      },
+      {
+        name: "SEG. ESP. PROF. EN ENFERMERÍA EN CENTRO QUIRÚRGICO",
+        code: "EQ",
+      },
+      {
+        name: "SEG. ESP. PROF. EN ENFERMERÍA EN SALUD FAMILIAR Y COMUNITARIA",
+        code: "ES",
+      },
+      { name: "ENFERMERIA", code: "S1" },
+      { name: "FARMACIA QUIMICA", code: "S2" },
+      { name: "NUTRICION Y DIETÉTICA", code: "S3" },
+      { name: "PSICOLOGIA", code: "S4" },
+      {
+        name: "TECNOLOGÍA MÉDICA EN TERAPIA FÍSICA Y REHABILITACIÓN",
+        code: "S5",
+      },
+      {
+        name: "TECNOLOGÍA MÉDICA EN LABORATORIO CLÍNICO Y ANATOMÍA PATOLÓGICA",
+        code: "S6",
+      },
+    ];
+  }
+
+  if (id == 4) {
+    return [
+      { name: "ADMINISTRACION DE NEGOCIOS INTERNACIONALES", code: "E1" },
+      { name: "ADMINISTRACION Y MARKETING", code: "E2" },
+      { name: "CONTABILIDAD Y FINANZAS", code: "E3" },
+      { name: "ADMINISTRACION Y NEGOCIOS INTERNACIONALES", code: "E4" },
+    ];
+  }
+};
 
 const carreras = [
   { name: "TODAS LAS CARRERAS", code: "" },
@@ -71,17 +128,39 @@ export const Graficos = () => {
   const [nuevosConvalidantes, setNuevosConvalidantes] = useState([]);
   const [recuperoDesercion, setRecuperoDesercion] = useState([]);
 
+  // REPORTE ACADEMICO
+  const [reporteAcademico, setReporteAcademico] = useState([]);
   const toast = useRef(null);
 
   useEffect(() => {
     graficos();
+    data_reporte_academico();
   }, []);
+
+  const data_reporte_academico = async (periodo = "20241") => {
+    const token = JSON.parse(localStorage.getItem("user"));
+    let config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.token}`,
+      },
+    };
+
+    try {
+      let { data } = await useApi.post(
+        "/graficos/get_reporte_academico",
+        { periodo },
+        config
+      );
+      setReporteAcademico(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const graficos = async () => {
     setLoadingPeriodos(true);
     const token = JSON.parse(localStorage.getItem("user"));
-
-    console.log(token);
 
     let config = {
       headers: {
@@ -91,7 +170,7 @@ export const Graficos = () => {
     };
 
     try {
-      let { data } = await useApi.get("graficos/graficos_por_defecto",config);
+      let { data } = await useApi.get("graficos/graficos_por_defecto", config);
       setEstudiantesMatriculados(data.estudiantes_matriculados);
       setNuevosConvalidantes(data.nuevos_convalidantes);
       setRecuperoDesercion(data.recuperos_desercion);
@@ -230,10 +309,7 @@ export const Graficos = () => {
       JSON.stringify({ periodo: 20232, radioOption: "M" })
     );
 
-  if (loadingGraficos) {
-    return "cargando...";
-    // return <Spinner />;
-  }
+  if (loadingGraficos) return;
 
   return (
     <div className="space-y-4">
@@ -242,7 +318,7 @@ export const Graficos = () => {
         <Dropdown
           value={selectedCarrera}
           onChange={(e) => setSelectedCarrera(e.value)}
-          options={carreras}
+          options={carrera_por_rol(auth.idrol)}
           optionLabel="name"
           placeholder="Selecciona una carrera"
           emptyFilterMessage="No hay resultados"
@@ -279,7 +355,8 @@ export const Graficos = () => {
           deserciones={deserciones}
         />
       </div>
+
+      <ReporteProgramaAcademico reporteAcademico={reporteAcademico} data_reporte_academico={data_reporte_academico} />
     </div>
   );
 };
-

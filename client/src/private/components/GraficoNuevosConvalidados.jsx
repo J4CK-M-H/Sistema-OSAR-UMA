@@ -30,6 +30,19 @@ export const GraficoNuevosConvalidados = ({
         enabled: false,
       },
     },
+    noData: {
+      text: 'No hay registros de la carrera',
+      align: 'center',
+      verticalAlign: 'middle',
+      offsetX: 0,
+      offsetY: 0,
+      style: {
+        color: '#000',
+        fontSize: '20px',
+        fontFamily: undefined,
+        fontWeight: 800
+      }
+    },
     responsive: [
       {
         breakpoint: 480,

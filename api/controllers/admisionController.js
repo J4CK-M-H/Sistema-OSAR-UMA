@@ -7,7 +7,7 @@ const checking_admision = async (req = request, res = response) => {
   try {
     let checking_validados = `SELECT id, ch_dni, CONCAT(ch_nombres,' ', ch_apepat,' ', ch_apemat) AS ch_nombres, es.abrev, ch_validacion, ch_edni, ch_dj, ch_secu, ch_djsecu, ch_p_matricula, ch_p_cuota, ch_estado_alu FROM checking_admision INNER JOIN especialidad es ON ch_codesp = es.codesp WHERE ch_validacion = 1 ORDER BY id ASC`;
 
-    let checking_no_validados = `SELECT id, ch_dni, CONCAT(ch_nombres,' ', ch_apepat,' ', ch_apemat) AS ch_nombres, es.abrev, ch_validacion, ch_edni, ch_dj, ch_secu, ch_djsecu, ch_p_matricula, ch_p_cuota, ch_estado_alu FROM checking_admision INNER JOIN especialidad es ON ch_codesp = es.codesp WHERE ch_validacion = 0 ORDER BY id ASC`;
+    let checking_no_validados = `SELECT id, ch_dni, CONCAT(ch_nombres,' ', ch_apepat,' ', ch_apemat) AS ch_nombres, es.codesp,es.abrev, ch_validacion, ch_edni, ch_dj, ch_secu, ch_djsecu, ch_p_matricula, ch_p_cuota, ch_estado_alu FROM checking_admision INNER JOIN especialidad es ON ch_codesp = es.codesp WHERE ch_validacion = 0 ORDER BY id ASC`;
 
     let checking_data_no_validados = await connection.query(
       checking_no_validados,

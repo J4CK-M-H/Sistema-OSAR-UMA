@@ -33,8 +33,6 @@ app.use("/api/fechas", fechasRoutes);
 
 app.use("/api/v2/libro", libroRoutes);
 
-
-
 // app.listen(3500, '192.168.0.112');
 app.listen(3500, '192.168.1.4');
 // app.listen(3500, () => {

@@ -28,8 +28,11 @@ export const Libro6 = () => {
   const file = useRef(null);
 
   const toastConfirm = useRef(null);
+  const toasteError = useRef(null);
 
   const [visible, setVisible] = useState(false);
+
+  // const toastConfirm = useRef(null);
 
   const [actionModal, setActionModal] = useState(false);
   const [selectedParticipacion, setSelectedParticipacion] = useState("");
@@ -41,6 +44,8 @@ export const Libro6 = () => {
     new Date().toLocaleDateString()
   );
 
+  // STATES MODAL EDITAR
+  const [idEditar, setIdEditar] = useState("");
   const [nombreEditar, setNombreEditar] = useState("");
   const [escuelaEditar, setEscuelaEditar] = useState("");
   const [tallerEditar, setTallerEditar] = useState("");
@@ -71,12 +76,14 @@ export const Libro6 = () => {
   };
 
   const toastLibroRegistrado = () => toast.success("Libro Registrado");
+  const showMessageEmptyFields = () => toast.error("Rellene todo los campos");
+  const toastLibroActualizado = () => toast.success("Registro actualizado!");
 
   const obtener_datos_libro_6 = async () => {
     setLoading(true);
 
     const token = await JSON.parse(localStorage.getItem("user"));
-    
+
     let config = {
       headers: {
         "Content-Type": "application/json",
@@ -123,7 +130,6 @@ export const Libro6 = () => {
         { file: file.current.files[0] },
         config
       );
-      toastLibroRegistrado();
     } catch (error) {
       console.log(error);
     } finally {
@@ -138,27 +144,26 @@ export const Libro6 = () => {
       [
         creditosModal.trim(),
         nombreTallerModal.trim(),
-        // fechaTaller.trim(),
         escuelaOrganizada.trim(),
         fechaEmision.trim(),
       ].some((field) => field == "")
     ) {
-      alert("complete todos los campos porfavor!!!");
+      showMessageEmptyFields();
+
       return;
     }
 
     if (fechaTaller.length == 0) {
-      alert("Agregue el rango de fechas");
+      showMessageEmptyFields();
       return;
     }
 
     if (selectedParticipacion.code == undefined) {
-      alert("Seleccion el tipo de participación");
       return;
     }
 
     if (fileUpload.current.getFiles().length == 0) {
-      alert("Suba un archivo");
+      showMessageEmptyFields();
       return;
     }
 
@@ -191,20 +196,23 @@ export const Libro6 = () => {
     } finally {
       obtener_datos_libro_6();
       setActionModal(true);
+
       setCreditosModal("");
       setEscuelaOrganizada("");
       setNombreTallerModal("");
-      // setFechaEmision("");
-      setFechaTaller("");
       setTimeout(() => {
         setActionModal(false);
       }, 4500);
+      setTimeout(() => {
+        toastLibroRegistrado();
+      }, 4550);
+      setFechaTaller("");
     }
   };
 
   if (actionModal) {
     return (
-      <div className="h-[100vh] bg-white w-full z-40 left-0 absolute top-0 flex flex-col justify-center items-center space-y-3">
+      <div className="h-[100vh] bg-white w-full left-0 absolute top-0 flex flex-col justify-center items-center space-y-3 z-20">
         <h2 className="text-5xl font-bold">
           Se esta subiendo el archivo, mi rey!
         </h2>
@@ -221,6 +229,7 @@ export const Libro6 = () => {
     console.log(id);
     try {
       let { data } = await useApi.post(`/libro/filter_user_by_id/${id}`);
+      setIdEditar(data.id);
       setNombreEditar(data.nombres);
       setEscuelaEditar(data.escuela_organizadora);
       setTallerEditar(data.nombre_taller);
@@ -235,14 +244,24 @@ export const Libro6 = () => {
     }
   };
 
-  const rellenar_modal = (data) => {
-    console.log(data);
-
-    // try {
-
-    // } catch (error) {
-
-    // }
+  const actualizarRegistro = async () => {
+    try {
+      await useApi.put(`/libro/actualizar_registro_libro_6/${idEditar}`, {
+        nombres: nombreEditar,
+        nombre_taller: tallerEditar,
+        nota: notaEditar,
+        escuela_organizadora: escuelaEditar,
+        fechaTaller: fechaTallerEditar,
+        creditos: creditosEditar,
+        observacion: observacionEditar,
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setVisible(false);
+      obtener_datos_libro_6();
+      toastLibroActualizado();
+    }
   };
 
   const templateHeader = (globalFilter, globalFilterAction) => (
@@ -317,9 +336,11 @@ export const Libro6 = () => {
                 </span>
                 <InputText
                   value={creditosModal}
+                  keyfilter="int"
                   onChange={(event) => setCreditosModal(event.target.value)}
                   className="placeholder:text-sm"
                   placeholder="Créditos"
+                  maxLength={2}
                 />
               </div>
 
@@ -332,7 +353,7 @@ export const Libro6 = () => {
                   placeholder="Fecha de taller desde - hasta"
                   onChange={(e) => setFechaTaller(e.value)}
                   selectionMode="range"
-                  showButtonBar 
+                  showButtonBar
                   // readOnlyInput
                 />
               </div>
@@ -411,13 +432,14 @@ export const Libro6 = () => {
             "escuela_organizadora",
             "participacion",
             "nombre_taller",
+            "nota",
             "creditos",
             "fecha_emision",
           ]}
           showGridlines
           filters={filtersLibro6}
           rows={5}
-          rowsPerPageOptions={[5, 10]}
+          rowsPerPageOptions={[5, 10, 20]}
           loading={loading}
         >
           <Column
@@ -431,7 +453,7 @@ export const Libro6 = () => {
             headerClassName="bg-rose-700 text-white"
           />
           <Column
-            field="creditos"
+            field="nota"
             header="Nota"
             headerClassName="bg-rose-700 text-white"
           />
@@ -517,8 +539,8 @@ export const Libro6 = () => {
                   <MdOutlineNumbers className="text-white" />
                 </span>
                 <InputText
-                  value={escuelaOrganizada}
-                  onChange={(event) => setEscuelaOrganizada(event.target.value)}
+                  value={notaEditar}
+                  onChange={(event) => setNotaEditar(event.target.value)}
                   placeholder="Nota"
                 />
               </div>
@@ -570,7 +592,10 @@ export const Libro6 = () => {
               cols={30}
             />
 
-            <button className="w-full rounded-sm text-center bg-rose-700 text-white py-2  font-semibold">
+            <button
+              onClick={actualizarRegistro}
+              className="w-full rounded-sm text-center bg-rose-700 text-white py-2  font-semibold"
+            >
               Actualizar
             </button>
           </div>

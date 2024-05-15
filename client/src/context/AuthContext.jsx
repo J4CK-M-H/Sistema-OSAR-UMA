@@ -11,14 +11,12 @@ const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('auth context')
     Authenticate();
   }, []);
 
   const Authenticate = async () => {
     setloadingAuth(true);
     const token = JSON.parse(localStorage.getItem("user"));
-    console.log(auth)
     if (!token) {
       setloadingAuth(false);
       return;

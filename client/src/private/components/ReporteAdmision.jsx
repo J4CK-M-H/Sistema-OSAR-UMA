@@ -112,14 +112,49 @@ export const ReporteAdmision = () => {
       setReporteAdmision(data.reporte_general);
       setLeadsMatriculados(data.leads_matriculados);
       setLeadsInscritos(data.leads_inscritos);
-      setE2Lead(data.leads_matriculados[0]);
-      setE3Lead(data.leads_matriculados[1]);
-      setS1Lead(data.leads_matriculados[2]);
-      setS2Lead(data.leads_matriculados[3]);
-      setE5Lead(data.leads_matriculados[4]);
-      setS3Lead(data.leads_matriculados[5]);
-      setS4Lead(data.leads_matriculados[6]);
-      setS6Lead(data.leads_matriculados[7]);
+
+      // validar las carreras existentes con condicionales o swtich
+      data.leads_matriculados.map((info_matriculado) => {
+        switch (info_matriculado.siglas) {
+          case 'E2':
+            setE2Lead(info_matriculado);
+            break;
+          case 'E3':
+            setE3Lead(info_matriculado);
+            break;
+          case 'E5':
+            setE5Lead(info_matriculado);
+            break;
+          case 'S1':
+            setS1Lead(info_matriculado);
+            break;
+          case 'S2':
+            setS2Lead(info_matriculado);
+            break;
+          case 'S3':
+            setS3Lead(info_matriculado);
+            break;
+          case 'S4':
+            setS4Lead(info_matriculado);
+            break;
+          case 'S5':
+            setS5Lead(info_matriculado);
+            break;
+          case 'S6':
+            setS6Lead(info_matriculado);
+            break;
+          default:
+            break;
+        }
+      });
+     
+      // setE3Lead(data.leads_matriculados[1]);
+      // setS1Lead(data.leads_matriculados[2]);
+      // setS2Lead(data.leads_matriculados[3]);
+      // setE5Lead(data.leads_matriculados[4]);
+      // setS3Lead(data.leads_matriculados[5]);
+      // setS4Lead(data.leads_matriculados[6]);
+      // setS6Lead(data.leads_matriculados[7]);
       // setS5Lead(data.leads_matriculados[8]);
       console.log(data);
     } catch (error) {
@@ -377,7 +412,7 @@ export const ReporteAdmision = () => {
           ? 0
           : Number.isInteger(rowData.rtotalcamp / rowData.valor_lead)
           ? (rowData.rtotalcamp / rowData.valor_lead).toFixed(0)
-          : (rowData.rtotalcamp / rowData.valor_lead).toFixed(1)}
+          : (rowData.rtotalcamp / rowData.valor_lead).toFixed(2)}
         %
       </p>
     );
@@ -509,11 +544,7 @@ export const ReporteAdmision = () => {
           <Column field="carrera" header="Carrera" />
           <Column field="valor_lead" header="Lead" body={templateLead} />
           <Column field="rtotalcamp" header="Real Total Camp." />
-          <Column
-            field="rtotalcamp"
-            header="%"
-            body={templatePercent}
-          />
+          <Column field="rtotalcamp" header="%" body={templatePercent} />
         </DataTable>
 
         <DataTable
@@ -527,11 +558,7 @@ export const ReporteAdmision = () => {
           <Column field="carrera" header="Carrera" />
           <Column field="valor_lead" header="Lead" body={templateLead} />
           <Column field="rtotalcamp" header="Real Total Camp." />
-          <Column
-            field="rtotalcamp"
-            header="%"
-            body={templatePercent}
-          />
+          <Column field="rtotalcamp" header="%" body={templatePercent} />
         </DataTable>
       </div>
     </div>

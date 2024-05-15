@@ -12,6 +12,21 @@
   @tailwind utilities;
 }
 
+@font-face {
+  font-family: "Antqua";
+  src: url("/fonts/Book-Antiqua.ttf");
+}
+
+@font-face {
+  font-family: "antqua_italic";
+  src: url("/fonts/02255_ANTQUAI.ttf");
+}
+
+@font-face {
+  font-family: "antqua_bold";
+  src: url("/fonts/02253_ANTQUAB.ttf");
+}
+
 body {
   background-color: #f6f1e9;
 }
@@ -75,9 +90,9 @@ body {
   @apply bg-rose-700 text-white;
 }
 
-.p-accordion-toggle-icon {
+/* .p-accordion-toggle-icon {
   display: none !important;
-}
+} */
 .p-accordion-content {
   padding: 0;
   margin: 0;
@@ -129,13 +144,13 @@ body {
   margin: 0 auto;
 }
 
-.p-paginator-page:focus {
+/* .p-paginator-page:focus {
   @apply bg-rose-700 text-white;
-}
+} */
 
-.p-paginator-page:hover {
+/* .p-paginator-page:hover {
   @apply bg-rose-700 text-white;
-}
+} */
 
 .p-datatable-thead {
   position: relative;
@@ -144,7 +159,7 @@ body {
 .p-checkbox .p-checkbox-box.p-highlight {
   color: #fe0000 !important;
   border: 1px solid #fe0000;
-  @apply bg-rose-700
+  @apply bg-rose-700;
 }
 
 .p-multiselect-panel .p-multiselect-items .p-multiselect-item.p-highlight {
@@ -152,37 +167,269 @@ body {
 }
 
 .p-multiselect:not(.disabled):hover {
-  @apply border border-rose-700
+  @apply border border-rose-700;
 }
 
 .p-multiselect:not(.disabled).p-focus {
   box-shadow: none;
-  @apply border border-rose-700
+  @apply border border-rose-700;
 }
 
 .table_matriculados .p-datatable-header {
-  @apply bg-rose-700
+  @apply bg-rose-700;
 }
 .p-dialog-header {
-  @apply bg-rose-700 text-white
+  @apply bg-rose-700 text-white;
 }
 
-.upload_section .p-button{
-  @apply bg-rose-700 border-none text-white
+.upload_section .p-button {
+  @apply bg-rose-700 border-none text-white;
 }
 
-.upload_section .p-fileupload-content{
-  @apply border-2 border-slate-400 border-dashed 
+.upload_section .p-fileupload-content {
+  @apply border-2 border-slate-400 border-dashed;
 }
 
 .upload_section [aria-label="Upload"] {
-  @apply hidden
+  @apply hidden;
 }
 
 .p-datatable-gridlines {
-  @apply border-red-800
+  @apply border-red-800;
 }
 
 .contenedor_filtro .p-autocomplete-input {
-  @apply w-full
+  @apply w-full;
+}
+
+.yin_yang {
+  width: 180px;
+  height: 180px;
+  position: relative;
+  border: 2px solid black;
+  background-image: linear-gradient(to left, black 50%, white 50%);
+  border-radius: 50%;
+  animation: rotacion 1.5s linear forwards infinite;
+}
+
+@keyframes rotacion {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(90deg);
+  }
+
+  50% {
+    transform: rotate(180deg);
+  }
+
+  75% {
+    transform: rotate(270deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.yang {
+  display: block;
+  content: "";
+  width: 90px;
+  height: 86px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.yin {
+  display: block;
+  content: "";
+  width: 90px;
+  height: 90px;
+  background-color: black;
+  z-index: 3;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.yang::after {
+  display: block;
+  content: "";
+  width: 25px;
+  height: 25px;
+  background-color: black;
+  position: relative;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  border-radius: 50%;
+}
+
+.yin::after {
+  display: block;
+  content: "";
+  width: 25px;
+  height: 25px;
+  background-color: white;
+  position: relative;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  border-radius: 50%;
+}
+
+.antquab {
+  font-family: "Antqua";
+}
+
+.downU {
+  animation: animationU 0.2s linear forwards;
+  translate: 0 -100%;
+}
+
+.downM {
+  animation: animationM 0.2s 0.4s linear forwards;
+  translate: 0 -100%;
+}
+
+.downA {
+  animation: animationA 0.2s 0.8s linear forwards;
+  translate: 0 -100%;
+}
+
+@keyframes animationU {
+  0% {
+    translate: 0 -50%;
+  }
+  100% {
+    translate: 0 0;
+  }
+}
+
+@keyframes animationM {
+  0% {
+    translate: 0 -50%;
+  }
+  100% {
+    translate: 0 0;
+  }
+}
+
+@keyframes animationA {
+  0% {
+    translate: 0 -50%;
+  }
+  100% {
+    translate: 0 0;
+  }
+}
+
+.heart {
+  translate: 0 0;
+  rotate: 45deg;
+  animation: pulse 0.8s linear forwards alternate infinite;
+}
+
+.banner {
+  filter: drop-shadow(1px 1px 0 black) drop-shadow(-1px -1px 0 white);
+}
+
+.heart::before {
+  display: block;
+  content: "";
+  width: 200px;
+  height: 200px;
+  background-color: #fe0000;
+  border-radius: 50%;
+  translate: 0 -50%;
+}
+
+.heart::after {
+  display: block;
+  content: "";
+  width: 200px;
+  height: 200px;
+  background-color: #fe0000;
+  border-radius: 50%;
+  translate: -50% -100%;
+}
+
+@keyframes pulse {
+  0% {
+    scale: 1;
+  }
+  100% {
+    scale: 1.5;
+  }
+}
+
+.sombra {
+  text-shadow: 1px 1px #000, -0.2px -0.2px #000;
+  letter-spacing: 5px;
+}
+
+.sombra_animacion_1 {
+  animation: shadow_animate_01 0.5s linear forwards alternate infinite;
+  translate: 0 5%;
+}
+
+.sombra_animacion_2 {
+  animation: shadow_animate_02 0.5s linear alternate infinite;
+  translate: 0 -5%;
+}
+
+.sombra_animacion_3 {
+  animation: shadow_animate_01 0.5s linear alternate infinite;
+  translate: 0 -5%;
+}
+
+@keyframes shadow_animate_01 {
+  0% {
+    translate: 0 10%;
+  }
+
+  50% {
+    translate: 0 0%;
+  }
+  100% {
+    translate: 0 -10%;
+  }
+}
+
+@keyframes shadow_animate_02 {
+  0% {
+    translate: 0 -15%;
+  }
+  25% {
+    translate: 0 -10%;
+  }
+  50% {
+    translate: 0 0%;
+  }
+  100% {
+    translate: 0 10%;
+  }
+}
+
+@keyframes shadow_animate_03 {
+  0% {
+    translate: 0 20%;
+  }
+  25% {
+    translate: 0 10%;
+  }
+  50% {
+    translate: 0 5%;
+  }
+  100% {
+    translate: 0 -20%;
+  }
 }

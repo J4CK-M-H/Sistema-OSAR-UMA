@@ -13,8 +13,13 @@ export const Navbar = ({ setVisible }) => {
         className="w-[40px] text-rose-700 h-[40px] flex justify-center items-center bg-white rounded-md"
         onClick={() => setVisible(true)}
       >
-        <CgMenuGridO size={30}/>
+        <CgMenuGridO size={30} />
       </button>
+      <div className="flex">
+        <p className="text-white sombra sombra_animacion_1 text-4xl font-extrabold">U</p>
+        <p className="text-white sombra sombra_animacion_2 text-4xl font-extrabold">M</p>
+        <p className="text-white sombra sombra_animacion_3 text-4xl font-extrabold">A</p>
+      </div>
       <button
         className="text-white flex flex-col items-center"
         onClick={closeSession}

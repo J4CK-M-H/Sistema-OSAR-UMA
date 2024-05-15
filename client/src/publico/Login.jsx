@@ -5,13 +5,17 @@ import { FiUser } from "react-icons/fi";
 import { TbPassword, TbLogin2 } from "react-icons/tb";
 import { Card } from "primereact/card";
 import { Toast } from "primereact/toast";
-import axios from "axios";
 import AuthContext from "../context/AuthContext";
 import { useApi } from "../hooks/useAxios";
+
+
 // LOGO
 import logo from "../assets/images/UmaLogoC.svg";
+import { SpinnerYinYang } from "../private/components/SpinnerYinYang";
 
 const Login = () => {
+  const [loadSpinner, setLoadSpinner] = useState(false);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const toast = useRef(null);
@@ -46,9 +50,11 @@ const Login = () => {
     try {
       const { data } = await useApi.post("/auth/login", user);
       localStorage.setItem("user", JSON.stringify(data));
-      setAuth(data);
+      setLoadSpinner(true);
+      setTimeout(() => {
+        setAuth(data);
+      }, 1000);
       // navigate('/private/home')
-      console.log(data)
     } catch (error) {
       // console.log(error);
       if (error.response.data) {
@@ -56,6 +62,8 @@ const Login = () => {
       }
     }
   };
+
+  if (loadSpinner) return <SpinnerYinYang />;
 
   return (
     <div className="h-screen flex justify-center items-center bg-[#F5F5F5]">

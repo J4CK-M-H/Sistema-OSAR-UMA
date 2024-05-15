@@ -16,6 +16,8 @@ export const PRIVATE = {
   LIBRO_5: "libro-5",
   CERTIFICADO: "generar-certificado",
   CORREO: "correo",
+  REPORT_TEMPLATE: "report-template",
+  FECHAS_INGRESO_EGRESO: "ingreso-egreso",
 };
 
 export const PUBLIC = {

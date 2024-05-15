@@ -322,16 +322,18 @@ const test_registrar_libro_5_sys = async (req = request, res) => {
     observacion = "",
   } = req.body;
 
-  // let regex = /^[a-zA-Z]+$/;
-  // if (regex.test(nombres) && regex.test(apellidos)) {
-  //   console.log("solo hay letras");
-  // } else {
-  //   return res
-  //     .status(404)
-  //     .json({
-  //       msg: `Los campos nombres y apellidos solo pueden contener letras`,
-  //     });
-  // }
+  let regex = /[0-9+$`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+  if (regex.test(apellidos)) {
+    return res.status(400).json({
+      msg: `Los campos nombres y apellidos solo pueden contener letras`,
+    });
+  }
+
+  if (regex.test(nombres)) {
+    return res.status(400).json({
+      msg: `Los campos nombres y apellidos solo pueden contener letras`,
+    });
+  }
 
   // periodo_egreso
   let anio = Number(periodo_egreso.split("-")[0]);
